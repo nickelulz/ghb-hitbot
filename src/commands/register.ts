@@ -1,5 +1,5 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
-import { Command } from "src/command";
+import { Command } from "src/types/Command";
 
 export const Register: Command = {
     name: "register",

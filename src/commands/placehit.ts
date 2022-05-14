@@ -1,5 +1,5 @@
 import DiscordJS, { BaseCommandInteraction, Client, Options } from "discord.js";
-import { Command } from "src/command";
+import { Command } from "src/types/Command";
 import { MINIMUM_HIT_PRICE } from "src/constants";
 import Hit from '../types/Hit'
 import Player from '../types/Player'

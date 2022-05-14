@@ -1,6 +1,6 @@
 import { Client } from "discord.js";
 import logger from '../logger'
-import commands from '../commands'
+import commands from '../commands/commands'
 import { load, save } from '../database'
 
 export default (client: Client): void => {
