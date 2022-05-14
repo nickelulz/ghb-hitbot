@@ -1,0 +1,3 @@
+const MINIMUM_HIT_PRICE = 5;
+
+export { MINIMUM_HIT_PRICE };

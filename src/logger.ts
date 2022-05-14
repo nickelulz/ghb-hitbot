@@ -11,6 +11,7 @@ const config = {
     },
     file: {
         type: 'file',
+        file: 'logs/',
         layout: {
             type: 'pattern',
             pattern: '[%d{yyyy-MM-dd] [hh:mm:ss}] [%p] %m'
@@ -20,6 +21,7 @@ const config = {
   categories: { default: { appenders: ['out'], level: 'info' } }
 };
 
+config.appenders.file.file += new Date().toDateString();
 log4js.configure(config);
 const logger = log4js.getLogger();
 export default logger;
