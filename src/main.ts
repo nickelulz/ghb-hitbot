@@ -7,7 +7,7 @@ dotenv.config()
 
 logger.info("Bot is starting...");
 
-const client = new Client({
+export const client = new Client({
     intents: []
 });
 

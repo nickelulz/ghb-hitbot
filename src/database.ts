@@ -4,18 +4,31 @@ import Hit from './types/Hit'
 import Player from './types/Player'
 
 let hits_JSON: [];
-let hits: Hit[] = [];
+export let hits: Hit[] = [];
 
 let players_JSON: [];
-let players: Player[] = [];
+export let players: Player[] = [];
 
-async function findPlayer(discordId: number) {
-    players.forEach((player: Player, index: number) => {
-        if (player.discordId == discordId)
-            return player;
-    });
-    throw new Error("Player not found!");
+export function findPlayer(discordId: string) {
+    for (let i = 0; i < players.length; i++)
+        if (players[i].discordId === discordId)
+            return players[i];
+    return false;
 };
+
+export function isTarget(player: Player) {
+    for (let i = 0; i < hits.length; i++)
+        if (hits[i].target.equals(player))
+            return true;
+    return false;
+}
+
+export function isRegisteredIGN(ign: string) {
+    for (let i = 0; i < players.length; i++)
+        if (players[i].ign == ign)
+            return true;
+    return false;
+}
 
 /**
  * JSON hit notation:
@@ -42,7 +55,7 @@ async function findPlayer(discordId: number) {
  *      "ign": "name"
  * }
  */
-function load() {
+export function load() {
     fs.readFile(__dirname + '/hits.json', 'utf-8', (err, raw: string) => {
         if (err) {
             logger.error(err);
@@ -71,7 +84,7 @@ function load() {
     });
 }
 
-function save() {
+export function save() {
     fs.writeFile(__dirname + '/hits.json', JSON.stringify(hits_JSON, null, 2), (err) => {
         if (err) {
             logger.error(err);
@@ -88,5 +101,3 @@ function save() {
         logger.info('Saved current player database');
     });
 }
-
-export { load, save, hits, players, findPlayer };

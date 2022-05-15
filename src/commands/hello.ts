@@ -1,7 +1,7 @@
 import { BaseCommandInteraction, Client } from "discord.js";
-import { Command } from "src/types/Command";
+import Command from "src/types/Command";
 
-export const Hello: Command = {
+const Hello: Command = {
     name: "hello",
     description: "Returns a greeting",
     type: "CHAT_INPUT",
@@ -14,3 +14,5 @@ export const Hello: Command = {
         });
     }
 }; 
+
+export default Hello;

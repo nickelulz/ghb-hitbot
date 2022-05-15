@@ -4,9 +4,8 @@ https://sabe.io/tutorials/how-to-build-discord-bot-typescript
 
 todo:
 1. looping through player and hits json
-2. checking if player is in array -> database (findPlayer), placehit, removehit, claimhit
-
-prefix: *?*
+2. command options type -> number/string types etc (register, placehit, removehit, etc any method that takes an option)
+>> (semi fixed?) 2. checking if player is in array -> database (findPlayer), placehit, removehit, claimhit
 
 commands:
 * placehit
@@ -15,3 +14,4 @@ commands:
 * claimhit
 * hello
 * register
+* listplayers

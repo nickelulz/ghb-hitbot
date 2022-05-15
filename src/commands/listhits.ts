@@ -1,17 +1,18 @@
 import { BaseCommandInteraction, Client } from "discord.js";
-import { Command } from "src/types/Command";
-import { hits } from "src/database";
-import Hit from "src/types/Hit";
+import Command from "../types/Command";
+import { hits } from "../database";
+import Hit from "../types/Hit";
 
-export const ListHits: Command = {
+const ListHits: Command = {
     name: "listhits",
     description: "List all currently placed hits",
     type: "CHAT_INPUT",
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         let content: string = "";
         hits.forEach((hit: Hit, index: number) => {
-            content += index + " " + hit.toString;
+            content += index + " " + hit.toString + "\n";
         });
+
         if (content.length == 0)
             content = "No hits are currently placed!";
         await interaction.followUp({
@@ -20,3 +21,5 @@ export const ListHits: Command = {
         });
     }
 }; 
+
+export default ListHits;
