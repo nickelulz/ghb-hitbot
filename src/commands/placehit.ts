@@ -2,7 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client, Options } from "discord.js";
 import Command from "src/types/Command";
 import { MINIMUM_HIT_PRICE } from "../constants";
 import Hit from '../types/Hit';
-import { hits, findPlayer, isTarget } from '../database';
+import { hits, findPlayerById, isTarget, save } from '../database';
 
 const PlaceHit: Command = {
     name: "placehit",
@@ -30,8 +30,8 @@ const PlaceHit: Command = {
         if (price < MINIMUM_HIT_PRICE)
             content = `Price is too low! The Minimum price for a hit is ${MINIMUM_HIT_PRICE}`;
         else {
-            const placer = findPlayer(interaction.user.id);
-            const target = findPlayer(interaction.user.id);
+            const placer = findPlayerById(interaction.user.id);
+            const target = findPlayerById(interaction.user.id);
             const current_time: Date = new Date();
 
             // Placer is not registered
@@ -59,6 +59,7 @@ const PlaceHit: Command = {
                 hits.push(new Hit(placer, target, price, current_time));
                 placer.lastPlacedHit = current_time;
                 content = `Successfully placed new hit on player ${target.ign}`
+                save();
             }
         }
 

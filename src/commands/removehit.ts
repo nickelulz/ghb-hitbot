@@ -1,6 +1,6 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "src/types/Command";
-import { players, hits, findPlayer } from "../database";
+import { players, hits, findPlayerById, save } from "../database";
 import Hit from "src/types/Hit";
 
 const RemoveHit: Command = {
@@ -19,7 +19,7 @@ const RemoveHit: Command = {
         const { options } = interaction;
         const index: number = Number(options.get("hit-number")?.value);
         const selectedHit: Hit = hits[index];
-        const user = findPlayer(interaction.user.id);
+        const user = findPlayerById(interaction.user.id);
 
         let content = "";
         if (!user)
@@ -29,6 +29,7 @@ const RemoveHit: Command = {
         else {
             hits.splice(index, 1);
             content = `Removed listed hit at index ${index} against player ${selectedHit.target} for ${selectedHit.price} diamonds!`;
+            save();
         }
 
 

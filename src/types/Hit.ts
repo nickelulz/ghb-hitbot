@@ -17,6 +17,16 @@ export default class Hit {
         return `${this.target.ign}'s head for ${this.price} diamonds. Placed at ${this.place_time.toDateString}`;
     }
 
+    get toJSON() {
+        return { placer: this.placer.ign, target: this.target.ign, price: this.price, datePlaced: this.place_time.toDateString };
+    }
+
+    toStringOptionalPlacer(placer: Player) {
+        if (placer.equals(this.placer))
+            return this.toString + " *PLACED BY YOU*";
+        return this.toString;
+    }
+
     equals(other: Hit) {
         return this.placer.equals(other.placer) && this.target.equals(other.target) && this.price == other.price;
     }

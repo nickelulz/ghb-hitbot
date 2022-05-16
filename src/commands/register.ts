@@ -1,7 +1,8 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "../types/Command";
-import { players, findPlayer, save, isRegisteredIGN } from "../database";
+import { players, findPlayerById, save, isRegisteredIGN } from "../database";
 import Player from "../types/Player";
+import logger from "../logger"
 
 const Register: Command = {
     name: "register",
@@ -17,15 +18,16 @@ const Register: Command = {
     ],
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const { options } = interaction;
-        const ign: string = String(options.get("ign")).trim();
+        const ign: string = String(options.get("ign")?.value).trim();
         let content: string = "";
 
-        if (!findPlayer(interaction.user.id)) {
+        if (!findPlayerById(interaction.user.id)) {
             if (isRegisteredIGN(ign))
                 content = "This IGN is already registered!";
             else if (ign != "null" && ign != null && ign != "") {
                 players.push(new Player(interaction.user.id, ign));
                 content = "You are now registered as " + ign;
+                logger.info("Registered new player " + ign + ".");
                 save();
             }
             else

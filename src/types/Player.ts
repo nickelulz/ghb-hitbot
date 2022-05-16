@@ -30,6 +30,10 @@ export default class Player {
             return `${this.user.username}@${this.ign}`;
     }
 
+    get toJSON() {
+        return { discordId: this.discordId, ign: this.ign };
+    }
+
     get hiringCooldown() {
         if (!this.lastPlacedHit)
             return 0;

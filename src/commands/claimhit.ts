@@ -1,6 +1,6 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "src/types/Command";
-import { hits, findPlayer } from "../database";
+import { hits, findPlayerById } from "../database";
 import Hit from "src/types/Hit";
 
 const ClaimHit: Command = {
@@ -16,10 +16,9 @@ const ClaimHit: Command = {
         }
     ],
     run: async (client: Client, interaction: BaseCommandInteraction) => {
-        const { options } = interaction;
-        const index: number = Number(options.get("hit-number")?.value);
+        const index = /* interaction.options.get() */ 0; // < temporary solution
         const selectedHit: Hit = hits[index];
-        const user = findPlayer(interaction.user.id);
+        const user = findPlayerById(interaction.user.id);
 
         let content = "";
         if (!user)

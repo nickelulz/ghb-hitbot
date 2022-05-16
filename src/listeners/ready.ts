@@ -11,7 +11,7 @@ export default (client: Client): void => {
         // Init database
         load();
 
-        logger.info(`${client.user.username} is online`);
+        logger.info(`${client.user.username} is online.`);
         await client.application.commands.set(commands);
     });
 }; 
