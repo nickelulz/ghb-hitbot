@@ -31,10 +31,7 @@ export function isTarget(player: Player) {
 }
 
 export function isRegisteredIGN(ign: string) {
-    for (let i = 0; i < players.length; i++)
-        if (players[i].ign == ign)
-            return true;
-    return false;
+    return !findPlayerByIGN(ign);
 }
 
 /**
@@ -134,6 +131,6 @@ export function save() {
             logger.error(err);
             return;
         }
-        logger.info('Saved current player database');
+        logger.info('Saved current player database.');
     });
 }

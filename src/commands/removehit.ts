@@ -24,13 +24,15 @@ const RemoveHit: Command = {
 
         let content = "";
         if (!user)
-            content = "You are not a registered user!";
-        else if (user.equals(selectedHit.placer))
-            content = `You are not the player who placed this hit! ${selectedHit.placer.toString} placed this!`;
+            content = "❌ You are not a registered user!";
+        else if (!user.equals(selectedHit.placer)) {
+            logger.error(`user ${user.toString} compared to user ${selectedHit.placer.toString}`);
+            content = `❌ You are not the player who placed this hit! ${selectedHit.placer.toString} placed this!`;
+        }
         else {
             hits.splice(index, 1);
-            content = `Removed listed hit at index ${index} against player ${selectedHit.target} for ${selectedHit.price} diamonds!`;
-            logger.info(`${user.ign} removed hit on ${selectedHit.target} for ${selectedHit.price} diamonds at index ${index}`);
+            content = `✅ Removed listed hit at index ${index} against player ${selectedHit.target.ign} for ${selectedHit.price} diamonds!`;
+            logger.info(`Player ${user.ign} removed hit on ${selectedHit.target.ign} for ${selectedHit.price} diamonds at index ${index}.`);
             save();
         }
 

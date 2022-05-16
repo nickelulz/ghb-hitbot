@@ -10,10 +10,10 @@ const ListPlayers: Command = {
         let content = "";
 
         for (let i = 0; i < players.length; i++)
-            content += (i+1) + ": " + players[i].toString + "\n";
+            content += (i+1) + " ▸ " + players[i].ign + "\n";
 
         if (content === "")
-            content = "No players are currently registered on this discord bot.";
+            content = "❌ No players are currently registered on this discord bot.";
 
         await interaction.followUp({
             ephemeral: true,

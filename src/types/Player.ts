@@ -4,18 +4,12 @@ import { HIRING_COOLDOWN, TARGETING_COOLDOWN } from "../constants";
 
 export default class Player {
     discordId: string;
-    user;
     ign: string;
 
     lastPlacedHit: Date | false;
     lastTargetedHit: Date | false;
 
     constructor(discordId: string, ign: string) {
-        this.user = client.users.cache.get(discordId);
-
-        if (!this.user)
-            logger.error(`Discord User @ ID ${discordId} @ IGN ${ign} not found!`);
-
         this.discordId = discordId;
         this.ign = ign;
 
@@ -24,10 +18,7 @@ export default class Player {
     }
 
     get toString() {
-        if (!this.user)
-            return `${this.discordId}@${this.ign} :: INVALID DISCORD ID`;
-        else
-            return `${this.user.username}@${this.ign}`;
+            return `${this.ign}@${this.discordId}`;
     }
 
     get toJSON() {
