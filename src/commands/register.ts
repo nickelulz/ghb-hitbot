@@ -33,6 +33,9 @@ const Register: Command = {
             else
                 content = "Invalid IGN!";
         }
+        else {
+            content = "You have already registered on this discord account!";
+        }
 
         await interaction.followUp({
             ephemeral: true,

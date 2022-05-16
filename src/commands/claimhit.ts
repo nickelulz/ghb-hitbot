@@ -1,7 +1,7 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
-import Command from "src/types/Command";
+import Command from "../types/Command";
 import { hits, findPlayerById } from "../database";
-import Hit from "src/types/Hit";
+import Hit from "../types/Hit";
 
 const ClaimHit: Command = {
     name: "claimhit",

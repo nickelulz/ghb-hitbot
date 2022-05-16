@@ -2,6 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "src/types/Command";
 import { players, hits, findPlayerById, save } from "../database";
 import Hit from "src/types/Hit";
+import logger from "../logger";
 
 const RemoveHit: Command = {
     name: "removehit",
@@ -29,6 +30,7 @@ const RemoveHit: Command = {
         else {
             hits.splice(index, 1);
             content = `Removed listed hit at index ${index} against player ${selectedHit.target} for ${selectedHit.price} diamonds!`;
+            logger.info(`${user.ign} removed hit on ${selectedHit.target} for ${selectedHit.price} diamonds at index ${index}`);
             save();
         }
 

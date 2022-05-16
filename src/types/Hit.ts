@@ -14,7 +14,7 @@ export default class Hit {
     }
 
     get toString() {
-        return `${this.target.ign}'s head for ${this.price} diamonds. Placed at ${this.place_time.toDateString}`;
+        return `${this.target.ign}'s head for ${this.price} diamonds. Placed at ${this.place_time.toDateString()}`;
     }
 
     get toJSON() {

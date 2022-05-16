@@ -118,6 +118,9 @@ function syncJSON() {
 export function save() {
     syncJSON();
 
+    for (let i = 0; i < hits_JSON.length; i++)
+        console.debug(JSON.stringify(hits_JSON[i]));
+
     fs.writeFile(__dirname + '/hits.json', JSON.stringify(hits_JSON, null, 2), (err) => {
         if (err) {
             logger.error(err);

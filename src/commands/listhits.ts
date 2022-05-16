@@ -13,11 +13,11 @@ const ListHits: Command = {
 
         if (!user)
             hits.forEach((hit: Hit, index: number) => {
-                content += index + " " + hit.toString + "\n";
+                content += index + " - " + hit.toString + "\n";
             });
         else {
             hits.forEach((hit: Hit, index: number) => {
-                content += index + " " + hit.toStringOptionalPlacer(user) + "\n";
+                content += index + " -  " + hit.toStringOptionalPlacer(user) + "\n";
             });
             content += "\n\`Make sure to register to place hits, remove hits, and claim hits...\`";
         }
