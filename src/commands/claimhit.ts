@@ -22,12 +22,14 @@ const ClaimHit: Command = {
 
         let content = "";
         if (!user)
-            content = "You are not a registered user!";
+            content = "❌ You are not a registered user!";
+        else if (!(index in hits))
+            content = "❌ Your selected index is not a listed hit! Make sure to use a correct index (check indexes with \`/listhits\`)"
         else if (user.equals(selectedHit.placer))
-            content = `You can\'t claim your own hit!`;
+            content = `❌ You can\'t claim your own hit!`;
         else {
             hits.splice(index, 1);
-            content = `Claimed listed hit at index ${index} against player ${selectedHit.target} for ${selectedHit.price} diamonds!`;
+            content = `✅ Claimed listed hit at index ${index} against player ${selectedHit.target} for 💰 ${selectedHit.price} diamonds!`;
         }
 
 

@@ -18,7 +18,7 @@ const ListHits: Command = {
             content = "❌ No hits are currently placed!";
 
         if (!user)
-            content += "\n\n\`Make sure to register to place hits, remove hits, and claim hits...\`";
+            content += "\n\n\`💡 Make sure to register to place hits, remove hits, and claim hits...\`";
 
         await interaction.followUp({
             ephemeral: true,

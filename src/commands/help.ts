@@ -17,7 +17,7 @@ const Help: Command = {
         "▸ */placehit*\n" +
         "▸ */claimhit*\n" +
         "▸ */removehit*\n"
-        "\n\`(all bolded commands require you to be registered)\`";
+        "\n\`(💡 all bolded commands require you to be registered)\`";
 
         await interaction.followUp({
             ephemeral: true,

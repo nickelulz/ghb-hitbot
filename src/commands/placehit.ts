@@ -62,7 +62,6 @@ const PlaceHit: Command = {
             // Success
             else {
                 hits.push(new Hit(placer, target, price, current_time));
-                console.log(JSON.stringify(hits[hits.length-1].toJSON));
                 placer.lastPlacedHit = current_time;
                 content = `✅ Successfully placed new hit on player ${target.ign}`;
                 logger.info(`Player ${placer.ign} placed new hit on ${target.ign}`);
