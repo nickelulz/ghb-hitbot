@@ -21,21 +21,20 @@ const Register: Command = {
         const ign: string = String(options.get("ign")?.value).trim();
         let content: string = "";
 
-        if (!findPlayerById(interaction.user.id)) {
-            if (isRegisteredIGN(ign))
-                content = "❌ This IGN is already registered!";
-            else if (ign != "null" && ign != null && ign != "") {
-                players.push(new Player(interaction.user.id, ign));
-                content = "✅ You are now registered as " + ign;
-                logger.info("Registered new player " + ign + ".");
-                save();
-            }
+        if (!findPlayerById(interaction.user.id))
+            if (!isRegisteredIGN(ign))
+                if (ign != "null" && ign != null && ign != "") {
+                    players.push(new Player(interaction.user.id, ign));
+                    content = "✅ You are now registered as " + ign;
+                    logger.info("Registered new player " + ign + ".");
+                    save();
+                }   
+                else
+                    content = "❌ Invalid IGN!";
             else
-                content = "❌ Invalid IGN!";
-        }
-        else {
+                content = "❌ This IGN is already registered!";
+        else
             content = "❌ You have already registered on this discord account!";
-        }
 
         await interaction.followUp({
             ephemeral: true,

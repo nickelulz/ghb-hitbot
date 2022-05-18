@@ -5,14 +5,12 @@ export default class Hit {
     target: Player;
     price: number;
     place_time: Date;
-    place_time_string: string;
 
     constructor(placer: Player, target: Player, price: number, place_time: Date) {
         this.placer = placer;
         this.target = target;
         this.price = price;
         this.place_time = place_time;
-        this.place_time_string = place_time.toDateString();
     }
 
     get toString() {
@@ -20,7 +18,13 @@ export default class Hit {
     }
 
     get toJSON() {
-        return { placer: this.placer.ign, target: this.target.ign, price: this.price, datePlaced: this.place_time_string };
+        const place_time_string: string = this.place_time.toISOString();
+        return { 
+            placer: this.placer.ign, 
+            target: this.target.ign, 
+            price: this.price, 
+            datePlaced: place_time_string
+        };
     }
 
     toStringOptionalPlacer(placer: Player) {

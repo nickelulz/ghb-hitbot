@@ -30,6 +30,10 @@ const ClaimHit: Command = {
         else {
             hits.splice(index, 1);
             content = `✅ Claimed listed hit at index ${index} against player ${selectedHit.target} for 💰 ${selectedHit.price} diamonds!`;
+            user.killCount++;
+            user.lastPlacedHit = selectedHit.place_time;
+            selectedHit.target.deathCount++;
+            selectedHit.target.lastTargetedHit = selectedHit.place_time;
         }
 
 

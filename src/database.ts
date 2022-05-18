@@ -74,7 +74,11 @@ export function load() {
         for (let i = 0; i < players_JSON.length; i++) {
             const discordId: string = players_JSON[i]["discordId"];
             const ign: string = players_JSON[i]["ign"];
-            players.push(new Player(discordId, ign));
+            const lastPlacedHit: string = players_JSON[i]["lastPlacedHit"];
+            const lastTargetedHit: string = players_JSON[i]["lastTargetedHit"];
+            const killCount: number = players_JSON[i]["killCount"];
+            const deathCount: number = players_JSON[i]["deathCount"];
+            players.push(new Player(discordId, ign, lastPlacedHit, lastTargetedHit, killCount, deathCount));
         }
     });
 

@@ -5,24 +5,39 @@ import { HIRING_COOLDOWN, TARGETING_COOLDOWN } from "../constants";
 export default class Player {
     discordId: string;
     ign: string;
-
     lastPlacedHit: Date | false;
     lastTargetedHit: Date | false;
+    killCount: number;
+    deathCount: number;
 
-    constructor(discordId: string, ign: string) {
+    constructor(discordId: string, ign: string, lastPlacedHit?: string, lastTargetedHit?: string, killCount?: number, deathCount?: number) {
         this.discordId = discordId;
         this.ign = ign;
-
-        this.lastPlacedHit = false;
-        this.lastTargetedHit = false;
+        this.lastPlacedHit = (lastPlacedHit === undefined || lastPlacedHit == "expired") ? false : new Date(lastPlacedHit);
+        this.lastTargetedHit = (lastTargetedHit === undefined || lastTargetedHit == "expired") ? false : new Date(lastTargetedHit);
+        this.killCount = (killCount === undefined) ? 0 : killCount;
+        this.deathCount = (deathCount === undefined) ? 0 : deathCount;
     }
 
     get toString() {
-            return `${this.ign}@${this.discordId}`;
+        return `${this.ign}@${this.discordId}; KC: ${this.killCount}; DC: ${this.deathCount}`;
     }
 
     get toJSON() {
-        return { discordId: this.discordId, ign: this.ign };
+        let lph_string: string;
+        let lth_string: string;
+
+        lph_string = (!this.lastPlacedHit) ? "expired" : this.lastPlacedHit.toISOString();
+        lth_string = (!this.lastTargetedHit) ? "expired" : this.lastTargetedHit.toISOString();
+
+        return { 
+            discordId: this.discordId, 
+            ign: this.ign, 
+            lastPlacedHit: lph_string, 
+            lastTargetedHit: lth_string,
+            killCount: this.killCount,
+            deathCount: this.deathCount
+        };
     }
 
     get hiringCooldown() {
