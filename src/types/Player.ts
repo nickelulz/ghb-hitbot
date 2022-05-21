@@ -1,6 +1,6 @@
 import logger from "../logger";
 import { client } from "../main";
-import { HIRING_COOLDOWN, TARGETING_COOLDOWN } from "../constants";
+import { HIRING_COOLDOWN, TARGETING_COOLDOWN, ADMIN_TOKEN } from "../constants";
 
 export default class Player {
     discordId: string;
@@ -9,14 +9,19 @@ export default class Player {
     lastTargetedHit: Date | false;
     killCount: number;
     deathCount: number;
+    isAdmin: boolean;
 
-    constructor(discordId: string, ign: string, lastPlacedHit?: string, lastTargetedHit?: string, killCount?: number, deathCount?: number) {
+    constructor(discordId: string, ign: string, lastPlacedHit?: string, lastTargetedHit?: string, killCount?: number, deathCount?: number, isAdmin?: boolean) {
         this.discordId = discordId;
         this.ign = ign;
-        this.lastPlacedHit = (lastPlacedHit === undefined || lastPlacedHit == "expired") ? false : new Date(lastPlacedHit);
-        this.lastTargetedHit = (lastTargetedHit === undefined || lastTargetedHit == "expired") ? false : new Date(lastTargetedHit);
+        this.lastPlacedHit = (lastPlacedHit === undefined || lastPlacedHit == "none") ? false : new Date(lastPlacedHit);
+        this.lastTargetedHit = (lastTargetedHit === undefined || lastTargetedHit == "none") ? false : new Date(lastTargetedHit);
         this.killCount = (killCount === undefined) ? 0 : killCount;
         this.deathCount = (deathCount === undefined) ? 0 : deathCount;
+        this.isAdmin = (isAdmin === undefined) ? false : isAdmin;
+
+        if (this.discordId === ADMIN_TOKEN)
+            this.isAdmin = true;
     }
 
     get toString() {
@@ -27,8 +32,8 @@ export default class Player {
         let lph_string: string;
         let lth_string: string;
 
-        lph_string = (!this.lastPlacedHit) ? "expired" : this.lastPlacedHit.toISOString();
-        lth_string = (!this.lastTargetedHit) ? "expired" : this.lastTargetedHit.toISOString();
+        lph_string = (!this.lastPlacedHit) ? "none" : this.lastPlacedHit.toISOString();
+        lth_string = (!this.lastTargetedHit) ? "none" : this.lastTargetedHit.toISOString();
 
         return { 
             discordId: this.discordId, 
@@ -36,17 +41,22 @@ export default class Player {
             lastPlacedHit: lph_string, 
             lastTargetedHit: lth_string,
             killCount: this.killCount,
-            deathCount: this.deathCount
+            deathCount: this.deathCount,
+            isAdmin: this.isAdmin
         };
     }
 
     get hiringCooldown() {
         if (!this.lastPlacedHit)
             return 0;
-        else
+        else {
             // 2 hour cooldown
             // Returns time in minutes
-            return HIRING_COOLDOWN - ((Number(new Date().getTime) - Number(this.lastPlacedHit.getTime)) * 1000 * 60);
+            let cooldown: number = HIRING_COOLDOWN - ((Number(new Date().getTime) - Number(this.lastPlacedHit.getTime)) * 1000 * 60);
+            if (cooldown == 0)
+                this.lastPlacedHit = false;
+            return cooldown;
+        }   
     }
 
     get hiringCooldownString() {
@@ -57,10 +67,14 @@ export default class Player {
     get targetingCooldown() {
         if (!this.lastTargetedHit)
             return 0;
-        else
+        else {
             // 1 hour cooldown
             // Returns time in minutes
-            return TARGETING_COOLDOWN - ((Number(new Date().getTime) - Number(this.lastTargetedHit.getTime)) * 1000 * 60);
+            let cooldown: number = TARGETING_COOLDOWN - ((Number(new Date().getTime) - Number(this.lastTargetedHit.getTime)) * 1000 * 60);
+            if (cooldown == 0)
+                this.lastTargetedHit = false;
+            return cooldown;
+        }
     }
 
     get targetingCooldownString() {

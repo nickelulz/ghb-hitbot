@@ -29,7 +29,7 @@ const PlaceHit: Command = {
 
         const price = Number(options.get("price")?.value);
         if (price < MINIMUM_HIT_PRICE)
-            content = `Price is too low! The Minimum price for a hit is ${MINIMUM_HIT_PRICE}`;
+            content = `Price is too low! *The Minimum price for a hit is ${MINIMUM_HIT_PRICE} diamonds.*`;
         else {
             const placer = findPlayerById(interaction.user.id);
             const target = findPlayerByIGN(String(options.get("target")?.value));

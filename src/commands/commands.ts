@@ -7,7 +7,28 @@ import ClaimHit from "./claimhit"
 import Register from "./register"
 import ListPlayers from "./listplayers"
 import Help from "./help"
+import Leaderboards from "./leaderboards"
+import Admin from "./admin"
+import DeAdmin from "./de-admin"
 
-// Registers all of the commands
-const commands: Command[] = [ Hello, ListHits, PlaceHit, RemoveHit, ClaimHit, Register, ListPlayers, Help ];
+// Command Registry
+const commands: Command[] = [
+    // Non-Registered User Commands
+    Hello, 
+    ListPlayers, 
+    ListHits, 
+    Register,
+    Help,
+
+    // Registered User Commands
+    PlaceHit, 
+    RemoveHit, 
+    ClaimHit, 
+    Leaderboards,
+
+    // Admin Only Commands
+    Admin,
+    DeAdmin
+];
+
 export default commands;

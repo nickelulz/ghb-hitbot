@@ -1,6 +1,6 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "../types/Command";
-import { players, findPlayerById, save, isRegisteredIGN } from "../database";
+import { players, findPlayerById, save, findPlayerByIGN } from "../database";
 import Player from "../types/Player";
 import logger from "../logger"
 
@@ -21,8 +21,8 @@ const Register: Command = {
         const ign: string = String(options.get("ign")?.value).trim();
         let content: string = "";
 
-        if (!findPlayerById(interaction.user.id))
-            if (!isRegisteredIGN(ign))
+        if (!findPlayerById(interaction.user.id)) {
+            if (!findPlayerByIGN(ign))
                 if (ign != "null" && ign != null && ign != "") {
                     players.push(new Player(interaction.user.id, ign));
                     content = "✅ You are now registered as " + ign;
@@ -33,6 +33,7 @@ const Register: Command = {
                     content = "❌ Invalid IGN!";
             else
                 content = "❌ This IGN is already registered!";
+        }
         else
             content = "❌ You have already registered on this discord account!";
 

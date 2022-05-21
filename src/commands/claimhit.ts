@@ -1,6 +1,6 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "../types/Command";
-import { hits, findPlayerById } from "../database";
+import { hits, findPlayerById, save } from "../database";
 import Hit from "../types/Hit";
 
 const ClaimHit: Command = {
@@ -29,11 +29,12 @@ const ClaimHit: Command = {
             content = `❌ You can\'t claim your own hit!`;
         else {
             hits.splice(index, 1);
-            content = `✅ Claimed listed hit at index ${index} against player ${selectedHit.target} for 💰 ${selectedHit.price} diamonds!`;
+            content = `✅ Claimed listed hit at index ${index} against player ${selectedHit.target.ign} for 💰 ${selectedHit.price} diamonds!`;
             user.killCount++;
             user.lastPlacedHit = selectedHit.place_time;
             selectedHit.target.deathCount++;
             selectedHit.target.lastTargetedHit = selectedHit.place_time;
+            save();
         }
 
 

@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "discordId": "333372556830703616",
+    "ign": "nickelulz",
+    "lastPlacedHit": "none",
+    "lastTargetedHit": "none",
+    "killCount": 0,
+    "deathCount": 0,
+    "isAdmin": true
+  },
+  {
+    "discordId": "0",
+    "ign": "dummy",
+    "lastPlacedHit": "none",
+    "lastTargetedHit": "none",
+    "killCount": 0,
+    "deathCount": 0,
+    "isAdmin": false
+  }
+]

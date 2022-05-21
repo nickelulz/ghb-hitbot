@@ -30,37 +30,6 @@ export function isTarget(player: Player) {
     return false;
 }
 
-export function isRegisteredIGN(ign: string) {
-    return !findPlayerByIGN(ign);
-}
-
-/**
- * JSON hit notation:
- * 
- * {
- *      "placer": "name",
- *      "target": "name",
- *      "price": 999,
- *      "datePlaced": "date string"
- * },
- * {
- *      "placer": "name",
- *      "target": "name",
- *      "price": 999,
- *      "datePlaced": "date string"
- * }
- * 
- * JSON player notation:
- * 
- * {
- *      "discordId": 999,
- *      "ign": "name"
- * },
- * {
- *      "discordId": 999,
- *      "ign": "name"
- * }
- */
 export function load() {
     fs.readFile(__dirname + '/players.json', 'utf-8', (err, raw: string) => {
         if (err) {
@@ -78,7 +47,8 @@ export function load() {
             const lastTargetedHit: string = players_JSON[i]["lastTargetedHit"];
             const killCount: number = players_JSON[i]["killCount"];
             const deathCount: number = players_JSON[i]["deathCount"];
-            players.push(new Player(discordId, ign, lastPlacedHit, lastTargetedHit, killCount, deathCount));
+            const isAdmin: boolean = players_JSON[i]["isAdmin"];
+            players.push(new Player(discordId, ign, lastPlacedHit, lastTargetedHit, killCount, deathCount, isAdmin));
         }
     });
 
@@ -118,9 +88,6 @@ function syncJSON() {
 
 export function save() {
     syncJSON();
-
-    for (let i = 0; i < hits_JSON.length; i++)
-        console.debug(JSON.stringify(hits_JSON[i]));
 
     fs.writeFile(__dirname + '/hits.json', JSON.stringify(hits_JSON, null, 2), (err) => {
         if (err) {
