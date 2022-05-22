@@ -2,18 +2,18 @@
   {
     "discordId": "333372556830703616",
     "ign": "nickelulz",
-    "lastPlacedHit": "none",
-    "lastTargetedHit": "none",
-    "killCount": 0,
-    "deathCount": 0,
+    "lastPlacedHit": "2022-05-22T01:50:33.694Z",
+    "lastTargetedHit": "2022-05-22T01:14:14.356Z",
+    "killCount": 1,
+    "deathCount": 1,
     "isAdmin": true
   },
   {
-    "discordId": "0",
-    "ign": "dummy",
-    "lastPlacedHit": "none",
-    "lastTargetedHit": "none",
-    "killCount": 0,
+    "discordId": "496452380892856340",
+    "ign": "Cryonein",
+    "lastPlacedHit": "2022-05-22T01:14:14.356Z",
+    "lastTargetedHit": "2022-05-22T01:50:25.475Z",
+    "killCount": 3,
     "deathCount": 0,
     "isAdmin": false
   }

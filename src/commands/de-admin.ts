@@ -2,6 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "../types/Command";
 import { findPlayerByIGN, findPlayerById, save } from "../database";
 import { ADMIN_TOKEN } from "../constants"
+import logger from "../logger";
 
 const DeAdmin: Command = {
     name: "de-admin",
@@ -32,9 +33,16 @@ const DeAdmin: Command = {
         else if (!(user.isAdmin && user.discordId === ADMIN_TOKEN))
             content = "❌ You are not the **root** admin! (Only the bot configuration manager has root access!)";
         
+        else if (target.discordId === ADMIN_TOKEN)
+            content = "❌ You can\'t remove the administrator from the root admin!";
+
+        else if (!target.isAdmin)
+            content = "❌ Your target is already not an admin!";
+
         // Success
         else {
             target.isAdmin = false;
+            logger.info(`User ${user.ign} revoked administrator access from user ${target.ign}`);
             content = `✅ Successfully removed user ${target.ign}\'s admin access.`;
             save();
         }

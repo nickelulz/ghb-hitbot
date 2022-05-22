@@ -2,6 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "../types/Command";
 import { findPlayerByIGN, findPlayerById, save } from "../database";
 import { ADMIN_TOKEN } from "../constants"
+import logger from "../logger";
 
 const Admin: Command = {
     name: "admin",
@@ -32,9 +33,13 @@ const Admin: Command = {
         else if (!(user.isAdmin && user.discordId === ADMIN_TOKEN))
             content = "❌ You are not the **root** admin! (Only the bot configuration manager has root access!)";
         
+        else if (target.isAdmin)
+            content = "❌ Your target is already an admin";
+
         // Success
         else {
             target.isAdmin = true;
+            logger.info(`User ${user.ign} gave administrator access to user ${target.ign}`);
             content = `✅ Successfully made user ${target.ign} an admin.`;
             save();
         }

@@ -94,7 +94,6 @@ export function save() {
             logger.error(err);
             return;
         }
-        logger.info('Saved current hit database.');
     });
 
     fs.writeFile(__dirname + '/players.json', JSON.stringify(players_JSON, null, 2), (err) => {
@@ -102,6 +101,7 @@ export function save() {
             logger.error(err);
             return;
         }
-        logger.info('Saved current player database.');
     });
+
+    // logger.info('Saved player and hit database.')
 }

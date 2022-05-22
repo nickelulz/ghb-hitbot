@@ -1,7 +1,8 @@
 import { Client } from "discord.js";
 import logger from '../logger'
-import commands from '../commands/commands'
-import { load, save } from '../database'
+import commands from '../commands'
+import { load } from '../database'
+import { getServerStatus } from "../server";
 
 export default (client: Client): void => {
     client.on("ready", async () => {
@@ -19,11 +20,16 @@ export default (client: Client): void => {
                 "Don\'t kill Zach\'s sheep.",
                 "Have fun!"
             ];
+
             return motds[Math.floor(Math.random() * motds.length)];
         }
-        client.user.setActivity(randomMOTD(), {type: "LISTENING"});
+
+        client.user.setActivity(randomMOTD());
 
         logger.info(`${client.user.username} is online.`);
         await client.application.commands.set(commands);
+
+        // Init data
+        getServerStatus();
     });
 }; 

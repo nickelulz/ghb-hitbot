@@ -1,4 +1,4 @@
-import { Client, ClientOptions } from "discord.js";
+import { Client } from "discord.js";
 import logger from "./logger";
 import ready from './listeners/ready';
 import interactionCreate from './listeners/interactionCreate';
