@@ -1,18 +1,28 @@
-# glasshouse bar hit bot
+# The Glasshouse Bar Personal Minecraft Server Bot
 
-https://sabe.io/tutorials/how-to-build-discord-bot-typescript
+This bot acts in parallel to a personal minecraft server.
 
-todo:
-2. server start command
-5. admin registry editing commands
+## How to configure the bot:
+* Edit any public (preset) constants in `constants.ts`.
+* Edit any private (non-preset) environment constants in `.env` (see `.env.example` for an example.)
 
-commands:
+### TO DO:
+1. Server start command
+2. Admin registry editing commands
+
+### Commands List:
 * placehit
 * removehit
 * listhits
 * claimhit
 * hello
 * register
-* listplayers
+* listregisteredplayers
+* listonlineplayers
 * leaderboards
 * help
+* admin
+* deadmin
+* serverinfo
+* start
+* status
