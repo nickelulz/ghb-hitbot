@@ -1,8 +1,6 @@
 import { BaseCommandInteraction, Client } from "discord.js";
 import { findPlayerById } from "../database";
-import Server from "../constants";
-import { spawn } from 'child_process'
-import { getServerStatus } from "../server";
+import { startServer, getServerStatus, serverCurrentlyRunning } from "../server"
 import Command from "../types/Command";
 import logger from "../logger";
 
@@ -13,7 +11,6 @@ const Start: Command = {
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         let content = "";
         const user = findPlayerById(interaction.user.id);
-        let executable;
 
         // User not registered/not found
         if (!user)
@@ -31,21 +28,14 @@ const Start: Command = {
             if (data.online)
                 content = `❌ The server is already online! ${data.players.now} people are playing!`;
 
+            else if (serverCurrentlyRunning)
+                content = `❌ The server is already currently running! Please try again later, or contact the root administrator.`;
+
             // Server is offline, send start request
             else {
                 logger.info(`User ${user.ign} has started the server. Attempting to start server process...`);
-                executable = spawn(Server.Path);
-                executable.stdout.on('data', (data: any) => {
-                    logger.info('[SERVER] ' + data);
-                    content = "✅ Started the server!"
-                });
-                executable.stderr.on('data', (data: any) => {
-                    logger.error('[SERVER] ' + data);
-                    content = "❌ Could not start the server. :(";
-                });
-                executable.on('close', (code) => {
-                    logger.error('[SERVER] Server executable closed with exit code ' + code);
-                });
+                content = "✅ Attempting to start the server!";
+                startServer();
             }
         }
 

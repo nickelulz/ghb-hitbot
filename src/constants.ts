@@ -1,11 +1,11 @@
 import dotenv from 'dotenv';
 import logger from './logger';
-dotenv.config();
 
 // public constants
 export const MINIMUM_HIT_PRICE = 10; // in diamonds
 export const HIRING_COOLDOWN = 120; // in minutes
 export const TARGETING_COOLDOWN = 60; // in minutes
+export const AUTO_START: boolean = true; 
 
 /**
  * DO NOT CONFIGURE BEYOND HERE,
@@ -13,8 +13,13 @@ export const TARGETING_COOLDOWN = 60; // in minutes
  * IN .env
  */
 
+// Load .env
+const env = dotenv.config();
+if (env.error)
+        throw env.error
+
 // environment/private variables
-export const BOT_TOKEN = process.env.TOKEN;
+export const BOT_TOKEN = process.env.BOT_TOKEN;
 export const ADMIN_TOKEN: string = (process.env.ADMIN_TOKEN === undefined || process.env.ADMIN_TOKEN.trim() === "") ? noRootAdmin() : process.env.ADMIN_TOKEN; // me
 const SERVER_PORT: number = (process.env.SERVER_PORT === undefined || process.env.SERVER_PORT.trim() === "") ? noPort() : Number(process.env.SERVER_PORT);
 const SERVER_ADDRESS: string = (process.env.SERVER_ADDRESS === undefined || process.env.SERVER_ADDRESS.trim() === "") ? noAddress() : process.env.SERVER_ADDRESS;
@@ -22,6 +27,11 @@ const SERVER_PATH: string = (process.env.SERVER_PATH === undefined || process.en
 const SERVER_VERSION = (process.env.SERVER_VERSION === undefined || process.env.SERVER_VERSION.trim() === "") ? noVersion() : process.env.SERVER_VERSION;
 const SERVER_DNS = (process.env.SERVER_DNS === undefined || process.env.SERVER_DNS.trim() === "") ? noDNS() : process.env.SERVER_DNS;
 
+/**
+ * JSON object representing all of the data
+ * of the server. (For ease of access, of
+ * course.)
+ */
 const Server = {
     Port: SERVER_PORT,
     Address: SERVER_ADDRESS,

@@ -2,7 +2,8 @@ import { Client } from "discord.js";
 import logger from '../logger'
 import commands from '../commands'
 import { load } from '../database'
-import { getServerStatus } from "../server";
+import { getServerStatus, startServer } from "../server";
+import { AUTO_START } from "../constants";
 
 export default (client: Client): void => {
     client.on("ready", async () => {
@@ -31,5 +32,9 @@ export default (client: Client): void => {
 
         // Init data
         getServerStatus();
+
+        // init server
+        if (AUTO_START)
+            startServer();
     });
 }; 
