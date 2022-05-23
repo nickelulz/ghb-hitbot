@@ -20,12 +20,12 @@ const Leaderboards: Command = {
             sort(deathRankings, 1);
             sort(killRankings, 0);
 
-            killsEmbed.setTitle("SUCCESSFULLY PLACED HITS");
+            killsEmbed.setTitle("SUCCESSFULLY PLACED HITS (KILLS)");
             killsEmbed.description = "";
             for (let i = 0; i < killRankings.length; i++)
                 killsEmbed.description += `${i+1}: ${killRankings[i].ign} - ${killRankings[i].killCount}\n`;
 
-            deathsEmbed.setTitle("TIMES TARGETTED SUCCESSFULLY");
+            deathsEmbed.setTitle("TIMES TARGETTED SUCCESSFULLY (DEATHS)");
             deathsEmbed.description = "";
             for (let i = 0; i < deathRankings.length; i++)
                 deathsEmbed.description += `${i+1}: ${deathRankings[i].ign} - ${deathRankings[i].deathCount}\n`;

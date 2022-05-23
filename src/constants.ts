@@ -49,6 +49,7 @@ function noRootAdmin() {
 
 function noPort() {
     logger.warn("Server PORT not set. Setting as default (25565)");
+    // Uses the default PORT for minecraft servers: 25565
     return 25565;
 }
 
