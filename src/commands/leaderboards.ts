@@ -8,9 +8,10 @@ const Leaderboards: Command = {
     description: "Lists out the leaderboards for kills and deaths (descending)",
     type: "CHAT_INPUT",
     run: async (client: Client, interaction: BaseCommandInteraction) => {
-        let embed = new MessageEmbed();
+        let killsEmbed = new MessageEmbed(), deathsEmbed = new MessageEmbed();
+
         if (players.length == 0)
-            embed.setDescription("❌ No players are currently registered!");
+            killsEmbed.setDescription("❌ No players are currently registered!");
         else {
             let deathRankings: Player[] = players;
             let killRankings: Player[] = players;
@@ -18,18 +19,20 @@ const Leaderboards: Command = {
             sort(deathRankings, 1);
             sort(killRankings, 0);
 
-            embed.description = "**KILLS (from hits):**\n";
+            killsEmbed.setTitle("SUCCESSFULLY PLACED HITS");
+            killsEmbed.description = "";
             for (let i = 0; i < killRankings.length; i++)
-                embed.description += `${i+1}: ${killRankings[i].ign} - ${killRankings[i].killCount}\n`;
+                killsEmbed.description += `${i+1}: ${killRankings[i].ign} - ${killRankings[i].killCount}\n`;
 
-            embed.description += "\n**DEATHS (from hits):**\n";
+            deathsEmbed.setTitle("TIMES TARGETTED SUCCESSFULLY");
+            deathsEmbed.description = "";
             for (let i = 0; i < deathRankings.length; i++)
-                embed.description += `${i+1}: ${deathRankings[i].ign} - ${deathRankings[i].deathCount}\n`;
+                deathsEmbed.description += `${i+1}: ${deathRankings[i].ign} - ${deathRankings[i].deathCount}\n`;
         }
 
         await interaction.followUp({
             ephemeral: true,
-            embeds: [embed]
+            embeds: [ (players.length == 0) ? killsEmbed : killsEmbed, deathsEmbed ]
         });
     }
 }; 

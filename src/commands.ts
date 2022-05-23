@@ -14,6 +14,8 @@ import ServerInfo from "./commands/serverinfo"
 import Status from "./commands/status"
 import Start from "./commands/start"
 import ListOnlinePlayers from "./commands/listonlineplayers"
+import SetDeaths from "./commands/setdeaths"
+import SetKills from "./commands/setkills"
 
 // Command Registry
 const commands: Command[] = [
@@ -36,7 +38,9 @@ const commands: Command[] = [
     // Admin Only Commands
     Admin,
     DeAdmin,
-    Start
+    Start,
+    SetDeaths,
+    SetKills
 ];
 
 export default commands;

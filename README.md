@@ -7,7 +7,7 @@ This bot acts in parallel to a personal minecraft server.
 * Edit any private (non-preset) environment constants in `.env` (see `.env.example` for an example.)
 
 ### TO DO:
-1. Server start command
+1. Server start command (exec -> spawn)
 2. Admin registry editing commands
 
 ### Commands List:
@@ -26,3 +26,6 @@ This bot acts in parallel to a personal minecraft server.
 * serverinfo
 * start
 * status
+
+* setkills
+* setdeaths

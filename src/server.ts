@@ -1,8 +1,7 @@
 import Server from './constants'; 
 import logger from './logger';
 import axios from 'axios';
-import { exec } from 'child_process';
-import { client } from './main';
+import { exec } from 'child_process'; // change to spawn?
 
 // 5 min cache time
 const cacheTime = 5 * 60 * 1000;

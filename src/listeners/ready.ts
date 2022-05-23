@@ -10,9 +10,6 @@ export default (client: Client): void => {
         if (!client.user || !client.application)
             return;
 
-        // Init database
-        load();
-
         function randomMOTD() {
             const motds: string[] = [
                 "Bruce really is a goat.",
@@ -29,6 +26,9 @@ export default (client: Client): void => {
 
         logger.info(`${client.user.username} is online.`);
         await client.application.commands.set(commands);
+
+        // Init database
+        load();
 
         // Init data
         getServerStatus();

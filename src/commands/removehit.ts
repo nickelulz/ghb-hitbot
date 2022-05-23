@@ -25,7 +25,7 @@ const RemoveHit: Command = {
         let content = "";
         if (!user)
             content = "❌ You are not a registered user!";
-        else if (!user.equals(selectedHit.placer)) {
+        else if (!user.equals(selectedHit.placer) && !user.isAdmin) {
             logger.error(`user ${user.toString} compared to user ${selectedHit.placer.toString}`);
             content = `❌ You are not the player who placed this hit! ${selectedHit.placer.toString} placed this!`;
         }

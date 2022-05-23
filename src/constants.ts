@@ -5,7 +5,7 @@ import logger from './logger';
 export const MINIMUM_HIT_PRICE = 10; // in diamonds
 export const HIRING_COOLDOWN = 120; // in minutes
 export const TARGETING_COOLDOWN = 60; // in minutes
-export const AUTO_START: boolean = true; 
+export const AUTO_START: boolean = false; 
 
 /**
  * DO NOT CONFIGURE BEYOND HERE,
