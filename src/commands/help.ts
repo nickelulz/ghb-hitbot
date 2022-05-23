@@ -15,10 +15,15 @@ const Help: Command = {
             "▸ /listhits\n" +
             "▸ /listplayers\n" +
             "▸ /register\n" +
+            "▸ /status\n" +
+            "▸ /serverinfo\n" +
             "▸ */placehit*\n" +
             "▸ */claimhit*\n" +
             "▸ */removehit*\n" +
+            "▸ */deregister*\n" +
             "▸ **/start**\n" +
+            "▸ **/setkills**\n" +
+            "▸ **/setdeaths**\n" +
             "▸ \`admin\`\n" +
             "▸ \`de-admin\`\n" +
             "\n\`(💡 all slanted commands require you to be registered)\`" +

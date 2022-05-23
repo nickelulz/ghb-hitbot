@@ -26,6 +26,6 @@ This bot acts in parallel to a personal minecraft server.
 * serverinfo
 * start
 * status
-
+* deregister
 * setkills
 * setdeaths
