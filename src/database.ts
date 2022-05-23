@@ -30,6 +30,12 @@ export function isTarget(player: Player) {
     return false;
 }
 
+export function removeAllHits(player: Player) {
+    for (let i = 0; i < hits.length; i++)
+        if (hits[i].target.equals(player) || hits[i].placer.equals(player))
+            hits.splice(i, 1);
+}
+
 export function load() {
     fs.readFile(__dirname + '/players.json', 'utf-8', (err, raw: string) => {
         if (err) {

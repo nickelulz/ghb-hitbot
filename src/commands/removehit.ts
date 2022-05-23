@@ -1,6 +1,6 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "src/types/Command";
-import { players, hits, findPlayerById, save } from "../database";
+import { hits, findPlayerById, save } from "../database";
 import Hit from "src/types/Hit";
 import logger from "../logger";
 

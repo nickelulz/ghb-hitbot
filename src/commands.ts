@@ -16,6 +16,7 @@ import Start from "./commands/start"
 import ListOnlinePlayers from "./commands/listonlineplayers"
 import SetDeaths from "./commands/setdeaths"
 import SetKills from "./commands/setkills"
+import DeRegister from "./commands/deregister"
 
 // Command Registry
 const commands: Command[] = [
@@ -40,7 +41,8 @@ const commands: Command[] = [
     DeAdmin,
     Start,
     SetDeaths,
-    SetKills
+    SetKills,
+    DeRegister
 ];
 
 export default commands;

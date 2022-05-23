@@ -1,4 +1,4 @@
-import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
+import { BaseCommandInteraction, Client, Message, MessageEmbed } from "discord.js";
 import Command from "../types/Command";
 import { players } from "../database";
 import Player from "../types/Player"
@@ -10,8 +10,9 @@ const Leaderboards: Command = {
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         let killsEmbed = new MessageEmbed(), deathsEmbed = new MessageEmbed();
 
-        if (players.length == 0)
+        if (players.length == 0) {
             killsEmbed.setDescription("❌ No players are currently registered!");
+        }
         else {
             let deathRankings: Player[] = players;
             let killRankings: Player[] = players;
@@ -30,9 +31,11 @@ const Leaderboards: Command = {
                 deathsEmbed.description += `${i+1}: ${deathRankings[i].ign} - ${deathRankings[i].deathCount}\n`;
         }
 
+        const embeds: MessageEmbed[] = (players.length == 0) ? [ killsEmbed ]  :  [ killsEmbed, deathsEmbed ];
+
         await interaction.followUp({
             ephemeral: true,
-            embeds: [ (players.length == 0) ? killsEmbed : killsEmbed, deathsEmbed ]
+            embeds: embeds
         });
     }
 }; 
