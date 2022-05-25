@@ -1,10 +1,10 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
-import { findPlayerById, findPlayerByIGN, save } from "../database";
-import Command from "../types/Command";
+import { findPlayerById, findPlayerByIGN, save } from "../../database";
+import Command from "../../types/Command";
 
-const SetKills: Command = {
-    name: "setkills",
-    description: "Set the kills of a user. Requires administrator permissions.",
+const SetDeaths: Command = {
+    name: "setdeaths",
+    description: "Set the deaths of a user. Requires administrator permissions.",
     type: "CHAT_INPUT",
     options: [
         {
@@ -15,7 +15,7 @@ const SetKills: Command = {
         },
         {
             name: "amount",
-            description: "The amount to set the user\'s kills to",
+            description: "The amount to set the user\'s deaths to",
             required: true,
             type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
         }
@@ -40,8 +40,8 @@ const SetKills: Command = {
 
         // Successful
         else {
-            target.killCount = amount;
-            content = `✅ Set user ${target.ign}\'s kills to ${amount}`;
+            target.deathCount = amount;
+            content = `✅ Set user ${target.ign}\'s deaths to ${amount}`;
             save();
         }
 
@@ -51,4 +51,4 @@ const SetKills: Command = {
     }
 }; 
 
-export default SetKills;
+export default SetDeaths;

@@ -1,5 +1,3 @@
-import logger from "../logger";
-import { client } from "../main";
 import { HIRING_COOLDOWN, TARGETING_COOLDOWN, ADMIN_TOKEN } from "../constants";
 
 export default class Player {

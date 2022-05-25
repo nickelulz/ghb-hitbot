@@ -1,8 +1,8 @@
-import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
-import Command from "../types/Command";
-import { players, findPlayerById, save, findPlayerByIGN } from "../database";
-import Player from "../types/Player";
-import logger from "../logger"
+import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
+import Command from "../../types/Command";
+import { players, findPlayerById, save, findPlayerByIGN } from "../../database";
+import Player from "../../types/Player";
+import logger from "../../logger"
 
 const Register: Command = {
     name: "register",
@@ -19,27 +19,27 @@ const Register: Command = {
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const { options } = interaction;
         const ign: string = String(options.get("ign")?.value).trim();
-        let content: string = "";
+        const response = new MessageEmbed();
 
         if (!findPlayerById(interaction.user.id)) {
             if (!findPlayerByIGN(ign))
                 if (ign != "null" && ign != null && ign != "") {
                     players.push(new Player(interaction.user.id, ign));
-                    content = "✅ You are now registered as " + ign;
+                    response.description = "✅ You are now registered as " + ign;
                     logger.info("Registered new player " + ign + ".");
                     save();
                 }   
                 else
-                    content = "❌ Invalid IGN!";
+                    response.description = "❌ Invalid IGN!";
             else
-                content = "❌ This IGN is already registered!";
+                response.description = "❌ This IGN is already registered!";
         }
         else
-            content = "❌ You have already registered on this discord account!";
+            response.description = "❌ You have already registered on this discord account!";
 
         await interaction.followUp({
             ephemeral: true,
-            content
+            embeds: [ response ]
         });
     }
 }; 

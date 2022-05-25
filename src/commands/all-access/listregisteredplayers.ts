@@ -1,6 +1,6 @@
 import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
-import Command from "../types/Command";
-import { players } from "../database";
+import Command from "../../types/Command";
+import { players } from "../../database";
 
 const ListRegisteredPlayers: Command = {
     name: "listregisteredplayers",

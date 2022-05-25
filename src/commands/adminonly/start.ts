@@ -1,8 +1,8 @@
 import { BaseCommandInteraction, Client } from "discord.js";
-import { findPlayerById } from "../database";
-import { startServer, getServerStatus, serverCurrentlyRunning } from "../server"
-import Command from "../types/Command";
-import logger from "../logger";
+import { findPlayerById } from "../../database";
+import { startServer, getServerStatus, serverCurrentlyRunning } from "../../server"
+import Command from "../../types/Command";
+import logger from "../../logger";
 
 const Start: Command = {
     name: "start",

@@ -1,5 +1,5 @@
 import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
-import Command from "../types/Command";
+import Command from "../../types/Command";
 
 const Help: Command = {
     name: "help",

@@ -1,8 +1,9 @@
 import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "src/types/Command";
-import { hits, findPlayerById, save } from "../database";
-import Hit from "src/types/Hit";
-import logger from "../logger";
+import { hits, findPlayerById, save } from "../../database";
+import Contract from "../../types/Contract";
+import Bounty from "../../types/Bounty";
+import logger from "../../logger";
 
 const RemoveHit: Command = {
     name: "removehit",
@@ -19,7 +20,7 @@ const RemoveHit: Command = {
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const { options } = interaction;
         const index: number = Number(options.get("hit-number")?.value);
-        const selectedHit: Hit = hits[index];
+        const selectedHit: Bounty = hits[index];
         const user = findPlayerById(interaction.user.id);
 
         let content = "";

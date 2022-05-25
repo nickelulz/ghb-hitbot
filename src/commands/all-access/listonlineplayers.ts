@@ -1,6 +1,6 @@
 import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
-import Command from "../types/Command";
-import { getServerStatus } from "../server";
+import Command from "../../types/Command";
+import { getServerStatus } from "../../server";
 
 const ListOnlinePlayers: Command = {
     name: "listonlineplayers",

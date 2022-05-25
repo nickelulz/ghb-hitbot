@@ -1,36 +1,44 @@
 import fs from 'fs'
 import logger from './logger'
-import Hit from './types/Hit'
+import Bounty from './types/Bounty'
+import Contract from './types/Contract';
 import Player from './types/Player'
 
 let hits_JSON: any[];
-export let hits: Hit[] = [];
+export let hits: Bounty[] = [];
 
 let players_JSON: any[];
 export let players: Player[] = [];
 
-export function findPlayerById(discordId: string) {
+export function findPlayerById(discordId: string): Player | false {
     for (let i = 0; i < players.length; i++)
         if (players[i].discordId === discordId)
             return players[i];
     return false;
 };
 
-export function findPlayerByIGN(ign: string) {
+export function findPlayerByIGN(ign: string): Player | false {
     for (let i = 0; i < players.length; i++)
         if (players[i].ign === ign)
             return players[i];
     return false;
 }
 
-export function isTarget(player: Player) {
+export function isTarget(player: Player): boolean {
     for (let i = 0; i < hits.length; i++)
         if (hits[i].target.equals(player))
             return true;
     return false;
 }
 
-export function removeAllHits(player: Player) {
+export function isContractor(player: Player): boolean {
+    for (let i = 0; i < hits.length; i++)
+        if (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(player))
+            return true;
+    return false;
+}
+
+export function removeAllHits(player: Player): void {
     for (let i = 0; i < hits.length; i++)
         if (hits[i].target.equals(player) || hits[i].placer.equals(player))
             hits.splice(i, 1);
@@ -71,10 +79,24 @@ export function load() {
             const target = findPlayerByIGN(hits_JSON[i]["target"]);
             const price: number = hits_JSON[i]["price"];
             const datePlaced: Date = new Date(hits_JSON[i]["datePlaced"]);
+            const type: string = hits_JSON[i]["type"];
             if (!placer || !target)
                 logger.error(`Invalid hit JSON at hit ${i}. Placer or Target not found in registry.`);
-            else
-                hits.push(new Hit(placer, target, price, datePlaced));
+            else {
+                switch (type) {
+                    case "bounty":
+                        hits.push(new Bounty(placer, target, price, datePlaced));
+                        break;
+                    case "contract":
+                        const contractor = findPlayerByIGN(hits_JSON[i]["contractor"]);
+                        const publicity = hits_JSON[i]["publicity"];
+                        if (!contractor)
+                            logger.error(`Invalid contracted hit JSON at hit ${i}. Contractor not found in registry.`);
+                        else
+                            hits.push(new Contract(placer, target, price, datePlaced, contractor, publicity));
+                        break;
+                }
+            }
         }
     });
 }
@@ -108,6 +130,4 @@ export function save() {
             return;
         }
     });
-
-    // logger.info('Saved player and hit database.')
 }

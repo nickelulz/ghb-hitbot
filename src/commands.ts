@@ -1,22 +1,31 @@
 import Command from "./types/Command"
-import Hello from './commands/hello'
-import ListHits from "./commands/listhits"
-import PlaceHit from "./commands/placehit"
-import RemoveHit from "./commands/removehit"
-import ClaimHit from "./commands/claimhit"
-import Register from "./commands/register"
-import ListRegisteredPlayers from "./commands/listregisteredplayers"
-import Help from "./commands/help"
-import Leaderboards from "./commands/leaderboards"
-import Admin from "./commands/admin"
-import DeAdmin from "./commands/de-admin"
-import ServerInfo from "./commands/serverinfo"
-import Status from "./commands/status"
-import Start from "./commands/start"
-import ListOnlinePlayers from "./commands/listonlineplayers"
-import SetDeaths from "./commands/setdeaths"
-import SetKills from "./commands/setkills"
-import DeRegister from "./commands/deregister"
+
+// All Access Commands
+import Hello from './commands/all-access/hello'
+import ListHits from "./commands/all-access/listhits"
+import Register from "./commands/all-access/register"
+import Help from "./commands/all-access/help"
+import ListRegisteredPlayers from "./commands/all-access/listregisteredplayers"
+import Leaderboards from "./commands/all-access/leaderboards"
+import ServerInfo from "./commands/all-access/serverinfo"
+import Status from "./commands/all-access/status"
+import ListOnlinePlayers from "./commands/all-access/listonlineplayers"
+
+// Registered Only
+import SetBounty from "./commands/registeredonly/setbounty"
+import SetContract from "./commands/registeredonly/setcontract"
+import RemoveHit from "./commands/registeredonly/removehit"
+import ClaimHit from "./commands/registeredonly/claimhit"
+import DeRegister from "./commands/registeredonly/deregister"
+
+// Administrator only
+import Start from "./commands/adminonly/start"
+import SetDeaths from "./commands/adminonly/setdeaths"
+import SetKills from "./commands/adminonly/setkills"
+
+ // Root admin only
+import Admin from "./commands/rootadminonly/admin"
+import DeAdmin from "./commands/rootadminonly/de-admin"
 
 // Command Registry
 const commands: Command[] = [
@@ -31,7 +40,8 @@ const commands: Command[] = [
     ListOnlinePlayers,
 
     // Registered User Commands
-    PlaceHit, 
+    SetBounty,
+    SetContract,
     RemoveHit, 
     ClaimHit, 
     Leaderboards,

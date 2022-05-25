@@ -1,7 +1,7 @@
 import { BaseCommandInteraction, Client, Message, MessageEmbed } from "discord.js";
-import Command from "../types/Command";
-import { players } from "../database";
-import Player from "../types/Player"
+import Command from "../../types/Command";
+import { players } from "../../database";
+import Player from "../../types/Player"
 
 const Leaderboards: Command = {
     name: "leaderboards",

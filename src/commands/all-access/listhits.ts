@@ -1,7 +1,6 @@
 import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
-import Command from "../types/Command";
-import { hits, findPlayerById } from "../database";
-import Hit from "../types/Hit";
+import Command from "../../types/Command";
+import { hits, findPlayerById } from "../../database";
 
 const ListHits: Command = {
     name: "listhits",
