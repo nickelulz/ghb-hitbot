@@ -1,4 +1,4 @@
-import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed, Options } from "discord.js";
+import DiscordJS, { BaseCommandInteraction, Client, Message, MessageEmbed, Options } from "discord.js";
 import Command from "../../types/Command";
 import { MINIMUM_HIT_PRICE } from "../../constants";
 import Contract from '../../types/Contract';
@@ -86,7 +86,13 @@ const SetContract: Command = {
             else {
                 hits.push(new Contract(placer, target, price, current_time, contractor, publicity));
                 placer.lastPlacedHit = current_time;
-                response.description = `✅ Successfully placed new hit on player ${target.ign}`;
+                response.description = `✅ Successfully set new contract for ${contractor.ign} on ${target.ign} for ${price} diamonds. Now it needs to be confirmed by the user.`;
+                client.users.cache.find(user => user.id === contractor.discordId)?.send({ 
+                    embeds: [ 
+                        new MessageEmbed()
+                            .setDescription(`❓ ${placer.ign} wants to contract you for a hit on ${target.ign} for ${price} diamonds. Use \`/respondcontract\` to accept or deny it!`)
+                    ]
+                });
                 logger.info(`Player ${placer.ign} placed new hit on ${target.ign}`);
                 save();
             }

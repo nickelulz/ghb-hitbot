@@ -2,6 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
 import Command from "../../types/Command";
 import { players, findPlayerById, save, findPlayerByIGN, removeAllHits } from "../../database";
 import logger from "../../logger"
+import Contract from "../../types/Contract";
 
 const DeRegister: Command = {
     name: "deregister",

@@ -7,6 +7,9 @@ import Player from './types/Player'
 let hits_JSON: any[];
 export let hits: Bounty[] = [];
 
+let pending_hits_JSON: any[];
+export let pending_hits: Bounty[] = [];
+
 let players_JSON: any[];
 export let players: Player[] = [];
 
@@ -21,6 +24,13 @@ export function findPlayerByIGN(ign: string): Player | false {
     for (let i = 0; i < players.length; i++)
         if (players[i].ign === ign)
             return players[i];
+    return false;
+}
+
+export function findContract(placer: Player, contractor: Player): Contract | false {
+    for (let i = 0; i < hits.length; i++)
+        if (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(contractor) && (<Contract> hits[i]).placer.equals(placer))
+            return (<Contract> hits[i]);
     return false;
 }
 
@@ -45,7 +55,7 @@ export function removeAllHits(player: Player): void {
 }
 
 export function load() {
-    fs.readFile(__dirname + '/players.json', 'utf-8', (err, raw: string) => {
+    fs.readFile(__dirname + './databases/players.json', 'utf-8', (err, raw: string) => {
         if (err) {
             logger.error(err);
             return;
@@ -66,7 +76,7 @@ export function load() {
         }
     });
 
-    fs.readFile(__dirname + '/hits.json', 'utf-8', (err, raw: string) => {
+    fs.readFile(__dirname + './databases/hits.json', 'utf-8', (err, raw: string) => {
         if (err) {
             logger.error(err);
             return;
@@ -99,10 +109,34 @@ export function load() {
             }
         }
     });
+
+    fs.readFile(__dirname + './databases/pending_hits.json', 'utf-8', (err, raw: string) => {
+        if (err) {
+            logger.error(err);
+            return;
+        }
+        logger.info('Loaded current hit database.')
+        hits_JSON = JSON.parse(raw);
+
+        for (let i = 0; i < hits_JSON.length; i++) {
+            const placer = findPlayerByIGN(pending_hits_JSON[i]["placer"]);
+            const target = findPlayerByIGN(pending_hits_JSON[i]["target"]);
+            const price: number = pending_hits_JSON[i]["price"];
+            const datePlaced: Date = new Date(pending_hits_JSON[i]["datePlaced"]);
+            const contractor = findPlayerByIGN(hits_JSON[i]["contractor"]);
+            const publicity = hits_JSON[i]["publicity"];
+
+            if (!placer || !target || !contractor)
+                logger.error(`Invalid hit JSON at pending hit ${i}. Placer, Target, or Contractor not found in registry.`);
+            else
+                hits.push(new Contract(placer, target, price, datePlaced, contractor, publicity));
+        }
+    });
 }
 
 function syncJSON() {
     // Clear Arrays
+    pending_hits_JSON.length = 0;
     hits_JSON.length = 0;
     players_JSON.length = 0;
 
@@ -112,19 +146,29 @@ function syncJSON() {
     // Copy from hit array to hit JSON array
     for (let i = 0; i < hits.length; i++)
         hits_JSON.push(hits[i].toJSON);
+    // Copy from pending hit array to pending JSON array
+    for (let i = 0; i < pending_hits.length; i++)
+        pending_hits_JSON.push(pending_hits[i].toJSON);
 }
 
 export function save() {
     syncJSON();
 
-    fs.writeFile(__dirname + '/hits.json', JSON.stringify(hits_JSON, null, 2), (err) => {
+    fs.writeFile(__dirname + './databases/hits.json', JSON.stringify(hits_JSON, null, 2), (err) => {
         if (err) {
             logger.error(err);
             return;
         }
     });
 
-    fs.writeFile(__dirname + '/players.json', JSON.stringify(players_JSON, null, 2), (err) => {
+    fs.writeFile(__dirname + './databases/players.json', JSON.stringify(players_JSON, null, 2), (err) => {
+        if (err) {
+            logger.error(err);
+            return;
+        }
+    });
+
+    fs.writeFile(__dirname + './databases/pending_hits.json', JSON.stringify(pending_hits_JSON, null, 2), (err) => {
         if (err) {
             logger.error(err);
             return;
