@@ -5,6 +5,7 @@ import logger from './logger';
  * The minimum price required to place a hit on someone in diamonds.
  * 
  * @type number
+ * @constant
  */
 export const MINIMUM_HIT_PRICE = 10;
 
@@ -13,6 +14,7 @@ export const MINIMUM_HIT_PRICE = 10;
  * in minutes. Default is 2 hours.
  * 
  * @type number
+ * @constant
  */
 export const HIRING_COOLDOWN = 120;
 
@@ -21,6 +23,7 @@ export const HIRING_COOLDOWN = 120;
  * each hit in minutes. Default is 2 hours.
  * 
  * @type number
+ * @constant
  */
 export const CONTRACTING_COOLDOWN = 120;
 
@@ -29,6 +32,7 @@ export const CONTRACTING_COOLDOWN = 120;
  * each hit in minutes. Default is 4 hours.
  * 
  * @type number
+ * @constant
  */
 export const TARGETING_COOLDOWN = 240;
 
@@ -37,6 +41,7 @@ export const TARGETING_COOLDOWN = 240;
  * server on startup.
  * 
  * @type boolean
+ * @constant
  */
 export const AUTO_START: boolean = false;
 
@@ -46,6 +51,7 @@ export const AUTO_START: boolean = false;
  * database.ts and logger debug messages.
  * 
  * @type boolean
+ * @constant
  */
 export const DEBUG_MODE: boolean = true;
 
@@ -67,7 +73,7 @@ if (env.error)
 
 // environment/private variables
 export const BOT_TOKEN = process.env.BOT_TOKEN;
-export const ADMIN_TOKEN: string = (process.env.ADMIN_TOKEN === undefined || process.env.ADMIN_TOKEN.trim() === "") ? noRootAdmin() : process.env.ADMIN_TOKEN; // me
+export const ADMIN_TOKEN: string = (process.env.ADMIN_TOKEN === undefined || process.env.ADMIN_TOKEN.trim() === "") ? noRootAdmin() : process.env.ADMIN_TOKEN;
 const SERVER_PORT: number = (process.env.SERVER_PORT === undefined || process.env.SERVER_PORT.trim() === "") ? noPort() : Number(process.env.SERVER_PORT);
 const SERVER_ADDRESS: string = (process.env.SERVER_ADDRESS === undefined || process.env.SERVER_ADDRESS.trim() === "") ? noAddress() : process.env.SERVER_ADDRESS;
 const SERVER_PATH: string = (process.env.SERVER_PATH === undefined || process.env.SERVER_PATH.trim() === "") ? noPath() : process.env.SERVER_PATH;
@@ -75,9 +81,13 @@ const SERVER_VERSION = (process.env.SERVER_VERSION === undefined || process.env.
 const SERVER_DNS = (process.env.SERVER_DNS === undefined || process.env.SERVER_DNS.trim() === "") ? noDNS() : process.env.SERVER_DNS;
 
 /**
- * JSON object representing all of the data
- * of the server. (For ease of access, of
- * course.)
+ * JSON object representing the Server,
+ * packages up all of the data into 5
+ * internal data fields: 'Port', 'Address',
+ * 'Version', 'Path' and 'DNS'.
+ * 
+ * @type JSON
+ * @constant
  */
 const Server = {
     Port: SERVER_PORT,
