@@ -55,6 +55,22 @@ export const AUTO_START: boolean = false;
  */
 export const DEBUG_MODE: boolean = true;
 
+/**
+ * Whether or not players can place hits on themselves.
+ * 
+ * @type boolean
+ * @constant
+ */
+export const SELF_HITS: boolean = false;
+
+/**
+ * Whether or not players can have multiple pending contracts at once.
+ * 
+ * @type boolean
+ * @constant
+ */
+export const ALLOW_MULTIPLE_PENDING_CONTRACTS: boolean = true;
+
 
 
 

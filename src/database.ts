@@ -54,6 +54,19 @@ export function findContract(placer: Player, contractor: Player): Contract | fal
 }
 
 /**
+ * Find a bounty from the hit database by matching the placer and the target.
+ * @param {Player} placer The player that placed the hit.
+ * @param {Player} target The player that is being contracted for the hit.
+ * @returns {Bounty | false} The hit that was found or false if not found.
+ */
+export function findBounty(placer: Player, target: Player): Bounty | false {
+    for (let i = 0; i < hits.length; i++)
+        if (hits[i] instanceof Bounty && hits[i].placer.equals(placer) && hits[i].target.equals(target))
+            return hits[i];
+    return false;
+}
+
+/**
  * Checks if a player is currently a target for a hit.
  * @param {Player} player The player to search for.
  * @returns {boolean} Whether or not the player is currently being targeted by a hit.
@@ -72,7 +85,19 @@ export function isTarget(player: Player): boolean {
  */
 export function isContractor(player: Player): boolean {
     for (let i = 0; i < hits.length; i++)
-        if (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(player))
+        if (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(player) && !(<Contract> hits[i]).pending)
+            return true;
+    return false;
+}
+
+/**
+ * Checks if a player currently has a placed hit on someone.
+ * @param {Player} player The player to search for. 
+ * @returns {boolean} Whether or not the player currently is a hirer for a hit on somebody.
+ */
+export function isHirer(player: Player): boolean {
+    for (let i = 0; i < hits.length; i++)
+        if (hits[i].placer.equals(player))
             return true;
     return false;
 }
@@ -100,7 +125,7 @@ export function load() {
         players_JSON = JSON.parse(raw);
 
         if (DEBUG_MODE) {
-            logger.info("Dumping player JSON.");
+            logger.debug("Dumping player JSON.");
             console.log(players_JSON);
         }
 
@@ -130,7 +155,7 @@ export function load() {
         hits_JSON = JSON.parse(raw);
 
         if (DEBUG_MODE) {
-            logger.info('Dumping hits JSON.');
+            logger.debug('Dumping hits JSON.');
             console.log(hits_JSON);
         }
 
@@ -154,12 +179,11 @@ export function load() {
                         break;
                     case "contract":
                         const contractor = findPlayerByIGN(hits_JSON[i]["contractor"]);
-                        const publicity = hits_JSON[i]["publicity"];
                         const pending = Boolean(hits_JSON[i]["pending"]);
                         if (!contractor)
                             logger.error(`Invalid contracted hit JSON at hit ${i}. Contractor ${hits_JSON[i]["contractor"]} not found in registry. (@103-database.ts)`);
                         else
-                            hits.push(new Contract(placer, target, price, datePlaced, contractor, publicity, pending));
+                            hits.push(new Contract(placer, target, price, datePlaced, contractor, pending));
                         break;
                 }
             }
@@ -206,4 +230,6 @@ export function save() {
             return;
         }
     });
+
+    logger.info('Saved all databases.');
 }

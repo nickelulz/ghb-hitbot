@@ -2,7 +2,6 @@ import Command from "./types/Command"
 
 // All Access Commands
 import Hello from './commands/all-access/hello'
-import ListHits from "./commands/adminonly/listallhits"
 import Register from "./commands/all-access/register"
 import Help from "./commands/all-access/help"
 import ListRegisteredPlayers from "./commands/all-access/listregisteredplayers"
@@ -12,51 +11,40 @@ import Status from "./commands/all-access/status"
 import ListOnlinePlayers from "./commands/all-access/listonlineplayers"
 
 // Registered Only
-import SetBounty from "./commands/registeredonly/setbounty"
-import SetContract from "./commands/registeredonly/setcontract"
-import RemoveHit from "./commands/registeredonly/removehit"
-
+import BountyCommand from "./commands/registeredonly/bountycommand"
+import ContractCommand from "./commands/registeredonly/contractcommand"
 import DeRegister from "./commands/registeredonly/deregister"
-import RespondContract from "./commands/registeredonly/respondcontract"
-import ViewPendingContracts from "./commands/registeredonly/viewpendingcontracts"
 
 // Administrator only
 import Start from "./commands/adminonly/start"
-import SetDeaths from "./commands/adminonly/setdeaths"
-import SetKills from "./commands/adminonly/setkills"
+import EditPlayerData from "./commands/adminonly/editplayerdata"
 
  // Root admin only
 import Admin from "./commands/rootadminonly/admin"
-import DeAdmin from "./commands/rootadminonly/de-admin"
 
 // Command Registry
 const commands: Command[] = [
     // Non-Registered User Commands
     Hello, 
     ListRegisteredPlayers, 
-    ListHits, 
     Register,
     Help,
     ServerInfo,
     Status,
     ListOnlinePlayers,
+    Leaderboards,
 
     // Registered User Commands
-    SetBounty,
-    SetContract,
-    RespondContract,
-    RemoveHit, 
-
-    Leaderboards,
-    ViewPendingContracts,
+    BountyCommand,
+    ContractCommand,
+    DeRegister,
 
     // Admin Only Commands
-    Admin,
-    DeAdmin,
     Start,
-    SetDeaths,
-    SetKills,
-    DeRegister
+    EditPlayerData,
+
+    // Root Admin Only Commands
+    Admin
 ];
 
 export default commands;

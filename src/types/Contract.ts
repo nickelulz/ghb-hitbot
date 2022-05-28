@@ -13,23 +13,15 @@ export default class Contract extends Hit {
     contractor: Player;
 
     /**
-     * Whether this contract is public (the placer and contractor 
-     * can be viewed) or private (only the contractor can be viewed).
-     * @type boolean
-     */
-    publicity: boolean;
-
-    /**
      * Whether this contract is still in pending (Not yet accepted 
      * by the contractor).
      * @type boolean
      */
     pending: boolean;
 
-    constructor(placer: Player, target: Player, price: number, place_time: Date, contractor: Player, publicity: boolean, pending: boolean) {
+    constructor(placer: Player, target: Player, price: number, place_time: Date, contractor: Player, pending: boolean) {
         super(placer, target, price, place_time);
         this.contractor = contractor;
-        this.publicity = publicity;
         this.pending = pending;
     }
 
@@ -38,7 +30,7 @@ export default class Contract extends Hit {
      * @override
      */
     get toString(): string {
-        return `${this.target.ign} - ${this.price} diamonds. Contractor: ${this.contractor.ign}. ` + ((this.publicity) ? "PUBLIC." : "PRIVATE.");
+        return `${this.target.ign} - ${this.price} diamonds. Contractor: ${this.contractor.ign}. `;
     }
 
     /**
@@ -54,7 +46,6 @@ export default class Contract extends Hit {
             price: this.price, 
             datePlaced: place_time_string,
             contractor: this.contractor.ign,
-            publicity: this.publicity,
             pending: this.pending
         };
     }
