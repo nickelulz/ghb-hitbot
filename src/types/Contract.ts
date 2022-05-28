@@ -1,25 +1,28 @@
-import Bounty from './Bounty';
 import Player from './Player';
+import Hit from './Hit'
+import logger from 'src/logger';
 
 /**
  * @class Contract
  * @extends Hit
  */
-export default class Contract extends Bounty {
+export default class Contract extends Hit {
     contractor: Player;
     publicity: boolean;
+    pending: boolean;
 
-    constructor(placer: Player, target: Player, price: number, place_time: Date, contractor: Player, publicity: boolean) {
+    constructor(placer: Player, target: Player, price: number, place_time: Date, contractor: Player, publicity: boolean, pending: boolean) {
         super(placer, target, price, place_time);
         this.contractor = contractor;
         this.publicity = publicity;
+        this.pending = pending;
     }
 
     /**
      * @override
      */
-    get toString(): string {
-        return super.toString + " Contracted with: " + this.contractor.ign + " " + (this.publicity) ? "Public." : "Private";
+    get toString() {
+        return `${this.target.ign} - ${this.price} diamonds. Contractor: ${this.contractor.ign}. ` + ((this.publicity) ? "PUBLIC." : "PRIVATE.");
     }
 
     /**
@@ -34,14 +37,15 @@ export default class Contract extends Bounty {
             price: this.price, 
             datePlaced: place_time_string,
             contractor: this.contractor.ign,
-            publicity: this.publicity
+            publicity: this.publicity,
+            pending: this.pending
         };
     }
 
     /**
      * @override
      */
-    equals(other: Bounty): boolean {
+    equals(other: Hit): boolean {
         if (!(other instanceof Contract))
             return false;
         return super.equals(other) && this.contractor.equals(other.contractor);

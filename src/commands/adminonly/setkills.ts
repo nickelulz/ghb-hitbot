@@ -1,4 +1,4 @@
-import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
+import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import { findPlayerById, findPlayerByIGN, save } from "../../database";
 import Command from "../../types/Command";
 
@@ -24,29 +24,29 @@ const SetKills: Command = {
         const user = findPlayerById(interaction.user.id);
         const target = findPlayerByIGN(String(interaction.options.get("ign")?.value));
         const amount = Number(interaction.options.get("amount")?.value);
-        let content: string = "";
+        const response = new MessageEmbed();
         
         // User not registered/not found
         if (!user)
-            content = "❌ You are not a registered user! (make sure to use \`/register\` to register!)";
+            response.description = "❌ You are not a registered user! (make sure to use \`/register\` to register!)";
 
         // Target not registered/not found
         else if (!target)
-            content = "❌ The user you selected to change is not registered!";
+            response.description = "❌ The user you selected to change is not registered!";
         
         // User is not an admin
         else if (!user.isAdmin)
-            content = "❌ You are not an administrator!";
+            response.description = "❌ You are not an administrator!";
 
         // Successful
         else {
             target.killCount = amount;
-            content = `✅ Set user ${target.ign}\'s kills to ${amount}`;
+            response.description = `✅ Set user ${target.ign}\'s kills to ${amount}`;
             save();
         }
 
         await interaction.followUp({
-            content
+            embeds: [ response ]
         });
     }
 }; 

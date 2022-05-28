@@ -17,6 +17,8 @@ import SetContract from "./commands/registeredonly/setcontract"
 import RemoveHit from "./commands/registeredonly/removehit"
 import ClaimHit from "./commands/registeredonly/claimhit"
 import DeRegister from "./commands/registeredonly/deregister"
+import RespondContract from "./commands/registeredonly/respondcontract"
+import ViewPendingContracts from "./commands/registeredonly/viewpendingcontracts"
 
 // Administrator only
 import Start from "./commands/adminonly/start"
@@ -42,9 +44,11 @@ const commands: Command[] = [
     // Registered User Commands
     SetBounty,
     SetContract,
+    RespondContract,
     RemoveHit, 
     ClaimHit, 
     Leaderboards,
+    ViewPendingContracts,
 
     // Admin Only Commands
     Admin,

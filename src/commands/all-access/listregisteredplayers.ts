@@ -1,28 +1,38 @@
 import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../../types/Command";
-import { players } from "../../database";
+import { isContractor, players } from "../../database";
+import Player from "../../types/Player";
 
 const ListRegisteredPlayers: Command = {
     name: "listregisteredplayers",
     description: "Lists all currently registered players",
     type: "CHAT_INPUT",
     run: async (client: Client, interaction: BaseCommandInteraction) => {
-        const embed = new MessageEmbed();
-        embed.description = "";
+        const response = new MessageEmbed();
+        response.description = "";
 
         for (let i = 0; i < players.length; i++)
-            embed.description += (i+1) + ": " + players[i].ign + "\n";
+            response.description += (i+1) + ": " + players[i].ign + " " + contractorStatus(players[i]) + "\n";
 
-        if (embed.description === "")
-            embed.description = "❌ No players are currently registered on this discord bot.";
+        if (response.description === "")
+            response.description = "❌ No players are currently registered on this discord bot.";
         else
-            embed.setTitle("PLAYERS");
+            response.setTitle("PLAYERS");
 
         await interaction.followUp({
             ephemeral: true,
-            embeds: [ embed ]
+            embeds: [ response ]
         });
     }
 }; 
+
+function contractorStatus(player: Player): string {
+    if (isContractor(player))
+        return "🛑";
+    else if (player.contractingCooldown > 0)
+        return "⏳ " + player.contractingCooldownString;
+    else
+        return "🟢";
+}
 
 export default ListRegisteredPlayers;

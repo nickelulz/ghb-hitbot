@@ -3,9 +3,11 @@ import logger from './logger';
 
 // public constants
 export const MINIMUM_HIT_PRICE = 10; // in diamonds
-export const HIRING_COOLDOWN = 120; // in minutes
-export const TARGETING_COOLDOWN = 60; // in minutes
-export const AUTO_START: boolean = false; 
+export const HIRING_COOLDOWN = 120; // 2 hours in minutes
+export const CONTRACTING_COOLDOWN = 120; // 2 hours in minutes
+export const TARGETING_COOLDOWN = 240; // 4 hours in minutes
+export const AUTO_START: boolean = false; // whether or not the server will autostart lol
+export const DEBUG_MODE: boolean = true; // enables a bunch of debug shit
 
 /**
  * DO NOT CONFIGURE BEYOND HERE,
@@ -16,7 +18,7 @@ export const AUTO_START: boolean = false;
 // Load .env
 const env = dotenv.config();
 if (env.error)
-        throw env.error
+        throw env.error;
 
 // environment/private variables
 export const BOT_TOKEN = process.env.BOT_TOKEN;

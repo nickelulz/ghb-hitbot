@@ -6,7 +6,7 @@ const Help: Command = {
     description: "Lists all of the commands that this bot has.",
     type: "CHAT_INPUT",
     run: async (client: Client, interaction: BaseCommandInteraction) => {
-        const embed = new MessageEmbed()
+        const response = new MessageEmbed()
         .setTitle("COMMANDS")
         .setDescription(
             "▸ /help\n" +
@@ -33,7 +33,7 @@ const Help: Command = {
 
         await interaction.followUp({
             ephemeral: true,
-            embeds: [ embed ]
+            embeds: [ response ]
         });
     }
 }; 

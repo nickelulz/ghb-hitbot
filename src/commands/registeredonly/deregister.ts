@@ -1,4 +1,4 @@
-import DiscordJS, { BaseCommandInteraction, Client } from "discord.js";
+import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../../types/Command";
 import { players, findPlayerById, save, findPlayerByIGN, removeAllHits } from "../../database";
 import logger from "../../logger"
@@ -19,16 +19,16 @@ const DeRegister: Command = {
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const user = findPlayerById(interaction.user.id);
         const target = findPlayerByIGN(String(interaction.options.get("ign")?.value).trim());
-        let content: string = "";
+        const response = new MessageEmbed();
 
         if (!user)
-            content = "❌ You are not a registered user!";
+            response.description = "❌ You are not a registered user!";
         else if (!target)
-            content = "❌ The player you have marked to deregister is already not registered!";
+            response.description = "❌ The player you have marked to deregister is already not registered!";
         else {
             if (user.equals(target)) {
                 players.splice(players.indexOf(user), 1);
-                content = `✅ You have been successfully deregistered.`;
+                response.description = `✅ You have been successfully deregistered.`;
                 logger.info(`User ${user.ign} deregistered themself.`);
                 removeAllHits(target);
                 save();
@@ -36,10 +36,10 @@ const DeRegister: Command = {
             
             else {
                 if (!user.isAdmin)
-                    content = "❌ This command requires administrator access!";
+                    response.description = "❌ This command requires administrator access!";
                 else {
                     players.splice(players.indexOf(target), 1);
-                    content = `✅ Deregistered player ${target.ign}.`;
+                    response.description = `✅ Deregistered player ${target.ign}.`;
                     logger.info(`User ${user.ign} deregistered user ${target.ign}`);
                     removeAllHits(target);
                     save();
@@ -49,7 +49,7 @@ const DeRegister: Command = {
 
         await interaction.followUp({
             ephemeral: true,
-            content
+            embeds: [ response ]
         });
     }
 }; 

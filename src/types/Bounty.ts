@@ -1,41 +1,46 @@
 import Contract from './Contract';
+import Hit from './Hit';
 import Player from './Player'
 
 
 /**
  * @class Bounty
  */
-export default class Bounty {
-    placer: Player;
-    target: Player;
-    price: number;
-    place_time: Date;
+export default class Bounty extends Hit {
 
     constructor(placer: Player, target: Player, price: number, place_time: Date) {
-        this.placer = placer;
-        this.target = target;
-        this.price = price;
-        this.place_time = place_time;
+        super(placer, target, price, place_time);
     }
 
+    /**
+     * @override
+     */
     get toString(): string {
-        return `${this.target.ign}'s head for ${this.price} diamonds. Placed at ${this.place_time.toDateString()}`;
+        return `${this.target.ign} - ${this.price} diamonds. Placed by ${this.placer.ign}`;
     }
 
+    /**
+     * @override
+     */
     get toJSON() {
-        const place_time_string: string = this.place_time.toISOString();
+        const place_time_string: string = super.place_time.toISOString();
         return { 
             type: "bounty",
-            placer: this.placer.ign, 
-            target: this.target.ign, 
-            price: this.price, 
+            placer: super.placer.ign, 
+            target: super.target.ign, 
+            price: super.price, 
             datePlaced: place_time_string
         };
     }
 
-    equals(other: Bounty): boolean {
+    /**
+     * @override
+     * @param Hit
+     * @returns boolean
+     */
+    equals(other: Hit): boolean {
         if (!(other instanceof Bounty) || other instanceof Contract)
             return false;
-        return this.placer.equals(other.placer) && this.target.equals(other.target) && this.price == other.price;
+        return super.equals(other);
     }
 }

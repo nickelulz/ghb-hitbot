@@ -1,4 +1,4 @@
-import DiscordJS, { BaseCommandInteraction, Client, Message, MessageEmbed, Options } from "discord.js";
+import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../../types/Command";
 import { MINIMUM_HIT_PRICE } from "../../constants";
 import Contract from '../../types/Contract';
@@ -84,15 +84,25 @@ const SetContract: Command = {
 
             // Success
             else {
-                hits.push(new Contract(placer, target, price, current_time, contractor, publicity));
+                hits.push(new Contract(placer, target, price, current_time, contractor, publicity, true));
                 placer.lastPlacedHit = current_time;
                 response.description = `✅ Successfully set new contract for ${contractor.ign} on ${target.ign} for ${price} diamonds. Now it needs to be confirmed by the user.`;
-                client.users.cache.find(user => user.id === contractor.discordId)?.send({ 
-                    embeds: [ 
-                        new MessageEmbed()
-                            .setDescription(`❓ ${placer.ign} wants to contract you for a hit on ${target.ign} for ${price} diamonds. Use \`/respondcontract\` to accept or deny it!`)
-                    ]
+
+                Promise.resolve(client.users.fetch(contractor.discordId)).then((contractor_discord: DiscordJS.User | undefined) => {
+                    if (contractor_discord === undefined)
+                        logger.error(`User ${contractor.ign} has an invalid discord ID not found in bot cache. (@56-respondcontact.ts)`);
+                    else {
+                        try {
+                            contractor_discord.send({ embeds: [
+                                new MessageEmbed()
+                                    .setDescription(`❓ ${placer.ign} wants to contract you for a hit on ${target.ign} for ${price} diamonds. Use \`/respondcontract\` to accept or deny it!`)
+                            ] });
+                        } catch (err: any) {
+                            logger.error(`Cannot message user ${contractor.ign}.`);
+                        }
+                    }
                 });
+
                 logger.info(`Player ${placer.ign} placed new hit on ${target.ign}`);
                 save();
             }

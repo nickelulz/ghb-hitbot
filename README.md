@@ -11,7 +11,8 @@ This bot acts in parallel to a personal minecraft server.
 2. Admin registry editing commands
 
 ### Commands List:
-* placehit
+* setcontract
+* setbounty
 * removehit
 * listhits
 * claimhit
@@ -29,3 +30,13 @@ This bot acts in parallel to a personal minecraft server.
 * deregister
 * setkills
 * setdeaths
+* viewpendingcontracts
+* respondcontract
+
+# commands that need to be changed bc bounty/hit/etc
+* listhits
+* claimhit
+* removehit
+* respondcontract
+* setbounty
+* setcontract

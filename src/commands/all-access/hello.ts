@@ -6,11 +6,11 @@ const Hello: Command = {
     description: "Returns a greeting",
     type: "CHAT_INPUT",
     run: async (client: Client, interaction: BaseCommandInteraction) => {
-        const embed = new MessageEmbed().setDescription("😀 Hello there!");
+        const response = new MessageEmbed().setDescription("😀 Hello there!");
 
         await interaction.followUp({
             ephemeral: true,
-            embeds: [ embed ]
+            embeds: [ response ]
         });
     }
 }; 
