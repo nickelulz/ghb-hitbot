@@ -6,12 +6,21 @@ import Hit from './types/Hit'
 import Player from './types/Player'
 import { DEBUG_MODE } from './constants'
 
+/* The list of hits represented in an array of JSON objects. */
 let hits_JSON: any[];
+/* The list of hits represented in an array of Hit objects. */
 export let hits: Hit[] = [];
 
+/* The list of players represented in an array JSON objects. */
 let players_JSON: any[];
+/* The list of players represented in an array of Player objects. */
 export let players: Player[] = [];
 
+/**
+ * Find a player from the database using a matching discord id.
+ * @param {string} discordId The discord ID to match.
+ * @returns {Player | false} The player that was found or false if not found.
+ */
 export function findPlayerById(discordId: string): Player | false {
     for (let i = 0; i < players.length; i++)
         if (players[i].discordId === discordId)
@@ -19,6 +28,11 @@ export function findPlayerById(discordId: string): Player | false {
     return false;
 };
 
+/**
+ * Find a player from the database using a matching in-game name.
+ * @param {string} ign The in-game name to match.
+ * @returns {Player | false} The player that was found or false if not found.
+ */
 export function findPlayerByIGN(ign: string): Player | false {
     for (let i = 0; i < players.length; i++)
         if (players[i].ign === ign)
@@ -26,6 +40,12 @@ export function findPlayerByIGN(ign: string): Player | false {
     return false;
 }
 
+/**
+ * Find a contract from the hit database by matching the placer and the contractor.
+ * @param {Player} placer The player that placed the hit.
+ * @param {Player} contractor The player that is being contracted for the hit.
+ * @returns {Contract | false} The hit that was found or false if not found.
+ */
 export function findContract(placer: Player, contractor: Player): Contract | false {
     for (let i = 0; i < hits.length; i++)
         if (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(contractor) && (<Contract> hits[i]).placer.equals(placer))
@@ -33,6 +53,11 @@ export function findContract(placer: Player, contractor: Player): Contract | fal
     return false;
 }
 
+/**
+ * Checks if a player is currently a target for a hit.
+ * @param {Player} player The player to search for.
+ * @returns {boolean} Whether or not the player is currently being targeted by a hit.
+ */
 export function isTarget(player: Player): boolean {
     for (let i = 0; i < hits.length; i++)
         if (hits[i].target.equals(player))
@@ -40,6 +65,11 @@ export function isTarget(player: Player): boolean {
     return false;
 }
 
+/**
+ * Checks if a player is currently a contractor.
+ * @param {Player} player The player to search for. 
+ * @returns {boolean} Whether or not the player is currently a contractor for a hit.
+ */
 export function isContractor(player: Player): boolean {
     for (let i = 0; i < hits.length; i++)
         if (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(player))
@@ -47,12 +77,19 @@ export function isContractor(player: Player): boolean {
     return false;
 }
 
+/**
+ * Removes all of this hits of a player.
+ * @param {Player} player The player to remove all of the hits off of.
+ */
 export function removeAllHits(player: Player): void {
     for (let i = 0; i < hits.length; i++)
         if (hits[i].target.equals(player) || hits[i].placer.equals(player) || (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(player)))
             hits.splice(i, 1);
 }
 
+/**
+ * Loads all databases - hits, completed_hits, players.
+ */
 export function load() {
     fs.readFile(__dirname + '/databases/players.json', 'utf-8', (err, raw: string) => {
         if (err) {
@@ -63,7 +100,7 @@ export function load() {
         players_JSON = JSON.parse(raw);
 
         if (DEBUG_MODE) {
-            logger.info("Dumping player JSON: ");
+            logger.info("Dumping player JSON.");
             console.log(players_JSON);
         }
 
@@ -93,7 +130,7 @@ export function load() {
         hits_JSON = JSON.parse(raw);
 
         if (DEBUG_MODE) {
-            logger.info('Dumping hits JSON');
+            logger.info('Dumping hits JSON.');
             console.log(hits_JSON);
         }
 
@@ -131,6 +168,10 @@ export function load() {
     });
 }
 
+/**
+ * Syncs all of the JSON arrays to
+ * their alternative regular arrays.
+ */
 function syncJSON() {
     // Clear Arrays
     hits_JSON.length = 0;
@@ -144,6 +185,11 @@ function syncJSON() {
         hits_JSON.push(hits[i].toJSON);
 }
 
+
+/**
+ * Synchronizes and writes the data on the three database arrays
+ * (players, hits, completed_hits) to each database file.
+ */
 export function save() {
     syncJSON();
 

@@ -8,8 +8,16 @@ const cacheTime = 5 * 60 * 1000;
 let data: any, lastUpdated = 0;
 const API_URL = 'https://api.mcsrvstat.us/2/' + ((Server.Port == 25565) ? Server.DNS : (Server.Address + ':' + Server.Port));
 
+/**
+ * Whether or not the server is currently being executed.
+ * @type boolean
+ */
 export let serverCurrentlyRunning: boolean = false;
 
+/**
+ * Starts the server by executing the server shell script at the Server Path.
+ * @async
+ */
 export async function startServer() {
     if (!serverCurrentlyRunning) {
         serverCurrentlyRunning = true;
@@ -27,6 +35,10 @@ export async function startServer() {
     }
 }
 
+/**
+ * Fetches the raw JSON data from the end API (api.mcsrvstat.us).
+ * @returns {JSON} The raw JSON data response.
+ */
 const fetchStatusJSON = function (): any {
     return axios.get(API_URL)
             .then(response => {
@@ -38,6 +50,10 @@ const fetchStatusJSON = function (): any {
             .then(response => response.data);
 }
 
+/**
+ * Updates and obtains the raw JSON status of the server.
+ * @returns {JSON} The JSON response data of the server.
+ */
 export const getServerStatus = function (): any {
     logger.info("Fetching server information.");
     // Cache expired/doesn't exist

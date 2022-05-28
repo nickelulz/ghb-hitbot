@@ -2,7 +2,7 @@ import Command from "./types/Command"
 
 // All Access Commands
 import Hello from './commands/all-access/hello'
-import ListHits from "./commands/all-access/listhits"
+import ListHits from "./commands/adminonly/listallhits"
 import Register from "./commands/all-access/register"
 import Help from "./commands/all-access/help"
 import ListRegisteredPlayers from "./commands/all-access/listregisteredplayers"
@@ -15,7 +15,7 @@ import ListOnlinePlayers from "./commands/all-access/listonlineplayers"
 import SetBounty from "./commands/registeredonly/setbounty"
 import SetContract from "./commands/registeredonly/setcontract"
 import RemoveHit from "./commands/registeredonly/removehit"
-import ClaimHit from "./commands/registeredonly/claimhit"
+
 import DeRegister from "./commands/registeredonly/deregister"
 import RespondContract from "./commands/registeredonly/respondcontract"
 import ViewPendingContracts from "./commands/registeredonly/viewpendingcontracts"
@@ -46,7 +46,7 @@ const commands: Command[] = [
     SetContract,
     RespondContract,
     RemoveHit, 
-    ClaimHit, 
+
     Leaderboards,
     ViewPendingContracts,
 

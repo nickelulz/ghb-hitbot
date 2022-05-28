@@ -9,8 +9,9 @@ This bot acts in parallel to a personal minecraft server.
 ### TO DO:
 1. Server start command (exec -> spawn)
 2. Admin registry editing commands
+3. Claiming hits (completed and verified hits go into completed_hits.json)
 
-### Commands List:
+### Commands List:d
 * setcontract
 * setbounty
 * removehit
@@ -32,11 +33,3 @@ This bot acts in parallel to a personal minecraft server.
 * setdeaths
 * viewpendingcontracts
 * respondcontract
-
-# commands that need to be changed bc bounty/hit/etc
-* listhits
-* claimhit
-* removehit
-* respondcontract
-* setbounty
-* setcontract

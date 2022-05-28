@@ -8,14 +8,13 @@ const ListRegisteredPlayers: Command = {
     description: "Lists all currently registered players",
     type: "CHAT_INPUT",
     run: async (client: Client, interaction: BaseCommandInteraction) => {
-        const response = new MessageEmbed();
-        response.description = "";
+        const response = new MessageEmbed().setDescription("");
 
         for (let i = 0; i < players.length; i++)
             response.description += (i+1) + ": " + players[i].ign + " " + contractorStatus(players[i]) + "\n";
 
         if (response.description === "")
-            response.description = "❌ No players are currently registered on this discord bot.";
+            response.setDescription("❌ No players are currently registered on this discord bot.");
         else
             response.setTitle("PLAYERS");
 

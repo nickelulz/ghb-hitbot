@@ -12,12 +12,12 @@ const ListHits: Command = {
         const response = new MessageEmbed();
         response.description = "";
         const user = findPlayerById(interaction.user.id);
-        
+
         let count = 1;
 
         for (let i = 0; i < hits.length; i++)
-            if (hits[i] instanceof Bounty || hits[i] instanceof Contract && (<Contract> hits[i]).pending)
-                response.description += count + " -> " + hits[i].toString + "\n";
+            if (hits[i] instanceof Bounty)
+                response.description += count++ + " -> " + hits[i].toString + "\n";
 
         if (response.description.length == 0)
             response.description = "❌ No bounties are currently placed!";
@@ -28,7 +28,7 @@ const ListHits: Command = {
             response.setTitle("HITS");
 
         if (response.description == "")
-            response.setDescription("❌ Error in getting the list of hits. Try again later? :)");
+            response.setDescription("❌ Error in getting the list of bounties. Try again later? :)");
 
         await interaction.followUp({
             ephemeral: true,

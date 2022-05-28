@@ -1,13 +1,58 @@
 import dotenv from 'dotenv';
 import logger from './logger';
 
-// public constants
-export const MINIMUM_HIT_PRICE = 10; // in diamonds
-export const HIRING_COOLDOWN = 120; // 2 hours in minutes
-export const CONTRACTING_COOLDOWN = 120; // 2 hours in minutes
-export const TARGETING_COOLDOWN = 240; // 4 hours in minutes
-export const AUTO_START: boolean = false; // whether or not the server will autostart lol
-export const DEBUG_MODE: boolean = true; // enables a bunch of debug shit
+/**
+ * The minimum price required to place a hit on someone in diamonds.
+ * 
+ * @type number
+ */
+export const MINIMUM_HIT_PRICE = 10;
+
+/**
+ * The amount of cooldown time for buffering between hiring each hit
+ * in minutes. Default is 2 hours.
+ * 
+ * @type number
+ */
+export const HIRING_COOLDOWN = 120;
+
+/**
+ * The amount of cooldown time for buffering between contracting for
+ * each hit in minutes. Default is 2 hours.
+ * 
+ * @type number
+ */
+export const CONTRACTING_COOLDOWN = 120;
+
+/**
+ * The amount of cooldown time for buffering between being targetted on
+ * each hit in minutes. Default is 4 hours.
+ * 
+ * @type number
+ */
+export const TARGETING_COOLDOWN = 240;
+
+/**
+ * Whether or not the bot will attempt to automatically start the minecraft
+ * server on startup.
+ * 
+ * @type boolean
+ */
+export const AUTO_START: boolean = false;
+
+/**
+ * Whether or not the bot will start in debug mode. Enables many debug
+ * features of the discord bot such as outputting the parsed JSON in 
+ * database.ts and logger debug messages.
+ * 
+ * @type boolean
+ */
+export const DEBUG_MODE: boolean = true;
+
+
+
+
+
 
 /**
  * DO NOT CONFIGURE BEYOND HERE,
@@ -44,32 +89,56 @@ const Server = {
 
 export default Server;
 
-function noRootAdmin() {
+/**
+ * Warns that the Root Admin is not set in .env and returns a placeholder.
+ * @returns {string} Default Root Admin Placeholder.
+ */
+function noRootAdmin(): string {
     logger.warn("No root admin set.");
     return "NONE";
 }
 
-function noPort() {
+/**
+ * Warns that the PORT for the server is not set and sets the default port instead.
+ * @returns {number} Default Minecaft Port (25565)
+ */
+function noPort(): number {
     logger.warn("Server PORT not set. Setting as default (25565)");
-    // Uses the default PORT for minecraft servers: 25565
     return 25565;
 }
 
-function noAddress() {
+/**
+ * Errors that there the Server Address is not set in .env and returns a placeholder.
+ * @returns {string} Default Server Address Placeholder. ("NONE")
+ */
+function noAddress(): string {
     logger.error("Server ADDRESS is not set.");
     return "NONE";
 }
 
-function noPath() {
+/**
+ * Errors that the Server executable PATH is not set in .env and returns a placeholder.
+ * @returns {string} Default Server Starting Path Placeholder ("NONE").
+ */
+function noPath(): string {
     logger.error("Server executable PATH not set.");
     return "NONE";
 }
 
+/**
+ * Warns that the Server Version is not set in .env and returns a placeholder.
+ * @returns {string} Default Server Version placeholder ("latest/implicit") 
+ */
 function noVersion() {
     logger.warn("Server VERSION not set.");
     return "latest/implicit";
 }
 
+/**
+ * Warns that the Server DNS is not set in .env and returns the Server 
+ * Address and the Server PORT as a placeholder.
+ * @returns {string} Default Server DNS placeholder: SERVER_ADDRESS:SERVER_PORT
+ */
 function noDNS() {
     logger.warn("Server DNS not set. Using server PORT and ADDRESS.");
     return SERVER_ADDRESS + ":" + SERVER_PORT;
