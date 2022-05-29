@@ -30,11 +30,17 @@ export default class Hit {
      */
     place_time: Date;
 
-    constructor(placer: Player, target: Player, price: number, place_time: Date) {
+    /**
+     * The time that this hit was claimed
+     */
+    claim_time: Date | undefined;
+
+    constructor(placer: Player, target: Player, price: number, place_time: Date, claim_time?: Date) {
         this.placer = placer;
         this.target = target;
         this.price = price;
         this.place_time = place_time;
+        this.claim_time = claim_time;
     }
 
     /**

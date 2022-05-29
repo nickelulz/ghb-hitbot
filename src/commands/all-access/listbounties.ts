@@ -4,9 +4,9 @@ import { hits, findPlayerById } from "../../database";
 import Bounty from '../../types/Bounty';
 import Contract from "../../types/Contract";
 
-const ListHits: Command = {
-    name: "listhits",
-    description: "List all currently placed hits",
+const ListBounties: Command = {
+    name: "listbounties",
+    description: "List all currently placed bounties",
     type: "CHAT_INPUT",
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const response = new MessageEmbed();
@@ -20,7 +20,7 @@ const ListHits: Command = {
                 response.description += count++ + " -> " + hits[i].toString + "\n";
 
         if (response.description.length == 0)
-            response.description = "❌ No bounties are currently placed!";
+            response.description = "👍 No bounties are currently placed!";
 
         if (!user)
             response.description += "\n\n\`💡 Make sure to register to place hits, remove hits, and claim hits...\`";
@@ -37,4 +37,4 @@ const ListHits: Command = {
     }
 }; 
 
-export default ListHits;
+export default ListBounties;

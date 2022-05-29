@@ -5,21 +5,46 @@ import Contract from './types/Contract'
 import Hit from './types/Hit'
 import Player from './types/Player'
 import { DEBUG_MODE } from './constants'
+import { client } from './main'
+import DiscordJS, { MessageEmbed } from 'discord.js'
 
-/* The list of hits represented in an array of JSON objects. */
+/**
+ * The list of hits represented in an array of Hit objects. 
+ * @exports database.ts
+ */
+export const hits: Hit[] = [];
+// The list of hits represented in an array of JSON objects. 
 let hits_JSON: any[];
-/* The list of hits represented in an array of Hit objects. */
-export let hits: Hit[] = [];
 
-/* The list of players represented in an array JSON objects. */
-let players_JSON: any[];
-/* The list of players represented in an array of Player objects. */
-export let players: Player[] = [];
+/**
+ * The list of players represented in an array of Player objects. 
+ * @exports database.ts
+ */
+export const players: Player[] = [];
+// The list of players represented in an array JSON objects. 
+let players_JSON: any[] = [];
+
+/**
+ * The list of claims that are currently awaiting verification in an array.
+ * @exports database.ts
+ */
+export const pending_claims: Hit[] = [];
+// The list of claims that are currently awaiting verification in JSON.
+let pending_claims_JSON: any[] = [];
+
+/**
+ * The list of completed hits in an array.
+ * @exports database.ts
+ */
+export const completed_hits: Hit[] = [];
+// The list of completed hits in JSON
+let completed_hits_JSON: any[] = [];
 
 /**
  * Find a player from the database using a matching discord id.
  * @param {string} discordId The discord ID to match.
  * @returns {Player | false} The player that was found or false if not found.
+ * @exports database.ts
  */
 export function findPlayerById(discordId: string): Player | false {
     for (let i = 0; i < players.length; i++)
@@ -32,6 +57,7 @@ export function findPlayerById(discordId: string): Player | false {
  * Find a player from the database using a matching in-game name.
  * @param {string} ign The in-game name to match.
  * @returns {Player | false} The player that was found or false if not found.
+ * @exports database.ts
  */
 export function findPlayerByIGN(ign: string): Player | false {
     for (let i = 0; i < players.length; i++)
@@ -45,6 +71,7 @@ export function findPlayerByIGN(ign: string): Player | false {
  * @param {Player} placer The player that placed the hit.
  * @param {Player} contractor The player that is being contracted for the hit.
  * @returns {Contract | false} The hit that was found or false if not found.
+ * @exports database.ts
  */
 export function findContract(placer: Player, contractor: Player): Contract | false {
     for (let i = 0; i < hits.length; i++)
@@ -58,6 +85,7 @@ export function findContract(placer: Player, contractor: Player): Contract | fal
  * @param {Player} placer The player that placed the hit.
  * @param {Player} target The player that is being contracted for the hit.
  * @returns {Bounty | false} The hit that was found or false if not found.
+ * @exports database.ts
  */
 export function findBounty(placer: Player, target: Player): Bounty | false {
     for (let i = 0; i < hits.length; i++)
@@ -67,9 +95,23 @@ export function findBounty(placer: Player, target: Player): Bounty | false {
 }
 
 /**
+ * Finds a hit by matching only the target.
+ * @param {Player} placer The player that placed the hit.
+ * @returns {Hit | false} The first hit that was found or false if not found.
+ * @exports database.ts
+ */
+export function findHitByTarget(target: Player): Hit | false {
+    for (let i = 0; i < hits.length; i++)
+        if (hits[i].target.equals(target))
+            return hits[i];
+    return false;
+}
+
+/**
  * Checks if a player is currently a target for a hit.
  * @param {Player} player The player to search for.
  * @returns {boolean} Whether or not the player is currently being targeted by a hit.
+ * @exports database.ts
  */
 export function isTarget(player: Player): boolean {
     for (let i = 0; i < hits.length; i++)
@@ -82,6 +124,7 @@ export function isTarget(player: Player): boolean {
  * Checks if a player is currently a contractor.
  * @param {Player} player The player to search for. 
  * @returns {boolean} Whether or not the player is currently a contractor for a hit.
+ * @exports database.ts
  */
 export function isContractor(player: Player): boolean {
     for (let i = 0; i < hits.length; i++)
@@ -94,6 +137,7 @@ export function isContractor(player: Player): boolean {
  * Checks if a player currently has a placed hit on someone.
  * @param {Player} player The player to search for. 
  * @returns {boolean} Whether or not the player currently is a hirer for a hit on somebody.
+ * @exports database.ts
  */
 export function isHirer(player: Player): boolean {
     for (let i = 0; i < hits.length; i++)
@@ -105,6 +149,7 @@ export function isHirer(player: Player): boolean {
 /**
  * Removes all of this hits of a player.
  * @param {Player} player The player to remove all of the hits off of.
+ * @exports database.ts
  */
 export function removeAllHits(player: Player): void {
     for (let i = 0; i < hits.length; i++)
@@ -113,12 +158,13 @@ export function removeAllHits(player: Player): void {
 }
 
 /**
- * Loads all databases - hits, completed_hits, players.
+ * Loads all databases - hits, completed_hits, players, and pending counterclaims.
+ * @exports database.ts
  */
 export function load() {
     fs.readFile(__dirname + '/databases/players.json', 'utf-8', (err, raw: string) => {
         if (err) {
-            logger.error(err + "(@58-database.ts)");
+            logger.error(err);
             return;
         }
 
@@ -160,36 +206,104 @@ export function load() {
         }
 
         if (hits_JSON === undefined || String(hits_JSON) === "undefined")
-            logger.error("Paring Error. hits_JSON is undefined! (@86-database.ts)");
+            logger.error("Paring Error. hits_JSON is undefined!");
 
-        for (let i = 0; i < hits_JSON.length; i++) {
-            const placer = findPlayerByIGN(hits_JSON[i]["placer"]);
-            const target = findPlayerByIGN(hits_JSON[i]["target"]);
-            const price: number = Number(hits_JSON[i]["price"]);
-            const datePlaced: Date = new Date(hits_JSON[i]["datePlaced"]);
-            const type: string = hits_JSON[i]["type"];
-            if (!placer)
-                logger.error(`Invalid hit JSON at index ${i}. Placer ${hits_JSON[i]["placer"]} not found in registry. (@92-database.ts)`);
-            else if (!target)
-                logger.error(`Invalid hit JSON at index ${i}. Target ${hits_JSON[i]["target"]} not found in registry. (@92-database.ts)`);
-            else {
-                switch (type) {
-                    case "bounty":
-                        hits.push(new Bounty(placer, target, price, datePlaced));
-                        break;
-                    case "contract":
-                        const contractor = findPlayerByIGN(hits_JSON[i]["contractor"]);
-                        const pending = Boolean(hits_JSON[i]["pending"]);
-                        if (!contractor)
-                            logger.error(`Invalid contracted hit JSON at hit ${i}. Contractor ${hits_JSON[i]["contractor"]} not found in registry. (@103-database.ts)`);
-                        else
-                            hits.push(new Contract(placer, target, price, datePlaced, contractor, pending));
-                        break;
-                }
+        parseJSONToArray(hits_JSON, hits);
+        logger.info('Loaded current hit database.');
+    });
+
+    fs.readFile(__dirname + '/databases/pending_claims.json', 'utf-8', (err, raw: string) => {
+        if (err) {
+            logger.error(err);
+            return;
+        }
+
+        pending_claims_JSON = JSON.parse(raw);
+
+        if (DEBUG_MODE) {
+            logger.debug("Dumping pending counterclaims JSON.");
+            console.log(pending_claims_JSON);
+        }
+
+        if (pending_claims_JSON === undefined || String(pending_claims_JSON) === "undefined")
+            logger.error("Paring Error. pending_claims_JSON is undefined!");
+        
+        parseJSONToArray(pending_claims_JSON, pending_claims);
+        logger.info("Loaded current pending counterclaims JSON");
+    });
+
+    fs.readFile(__dirname + '/databases/completed_hits.json', 'utf-8', (err, raw: string) => {
+        if (err) {
+            logger.error(err);
+            return;
+        }
+
+        completed_hits_JSON = JSON.parse(raw);
+
+        if (DEBUG_MODE) {
+            logger.debug("Dumping completed hits JSON.");
+            console.log(completed_hits_JSON);
+        }
+
+        parseJSONToArray(completed_hits_JSON, completed_hits);
+        logger.info("Loaded current completed hits JSON");
+    });
+}
+
+/**
+ * DM's a player a message on discord.
+ * @param {Player} user The user to message.
+ * @param {MessageEmbed} message The message to be sent to the user. 
+ */
+export function dm_user(user: Player, message: MessageEmbed): void {
+    // DM hirer with contractor response
+    Promise.resolve(client.users.fetch(user.discordId)).then((user_discord: DiscordJS.User | undefined) => {
+        if (user_discord === undefined)
+            logger.error(`User ${user.ign} has an invalid discord ID not found in bot cache.`);
+        else {
+            try {
+                user_discord.send({ embeds: [ message ] });
+            }
+            catch (err: any) {
+                logger.warn(`Cannot message user ${user.ign}.`);
             }
         }
-        logger.info('Loaded current hit database.')
     });
+}
+
+/**
+ * Parses a JSON array and outputs it to a Hit array.
+ * @param {JSON[]} json The JSON array to parse from.
+ * @param {Hit[]} out The Hit array to output to.
+ */
+function parseJSONToArray(json: any[], out: Hit[]) {
+    for (let i = 0; i < json.length; i++) {
+        const placer = findPlayerByIGN(json[i]["placer"]);
+        const target = findPlayerByIGN(json[i]["target"]);
+        const price: number = Number(json[i]["price"]);
+        const datePlaced: Date = new Date(json[i]["datePlaced"]);
+        const dateClaimed: Date | undefined = (json[i]["dateClaimed"] === "none") ? undefined : new Date(json[i]["dateClaimed"]);
+        const type: string = json[i]["type"];
+        if (!placer)
+            logger.error(`Invalid hit JSON at index ${i}. Placer ${json[i]["placer"]} not found in registry.`);
+        else if (!target)
+            logger.error(`Invalid hit JSON at index ${i}. Target ${json[i]["target"]} not found in registry.`);
+        else {
+            switch (type) {
+                case "bounty":
+                    out.push(new Bounty(placer, target, price, datePlaced, dateClaimed));
+                    break;
+                case "contract":
+                    const contractor = findPlayerByIGN(json[i]["contractor"]);
+                    const pending = Boolean(json[i]["pending"]);
+                    if (!contractor)
+                        logger.error(`Invalid contracted hit JSON at hit ${i}. Contractor ${json[i]["contractor"]} not found in registry.`);
+                    else
+                        out.push(new Contract(placer, target, price, datePlaced, contractor, pending, dateClaimed));
+                    break;
+            }
+        }
+    }
 }
 
 /**
@@ -200,6 +314,8 @@ function syncJSON() {
     // Clear Arrays
     hits_JSON.length = 0;
     players_JSON.length = 0;
+    pending_claims_JSON.length = 0;
+    completed_hits_JSON.length = 0;
 
     // Copy from player arrays to player JSON arrays 
     for (let i = 0; i < players.length; i++)
@@ -207,12 +323,19 @@ function syncJSON() {
     // Copy from hit array to hit JSON array
     for (let i = 0; i < hits.length; i++)
         hits_JSON.push(hits[i].toJSON);
+    // Copy from pending counterclaims array to pending counterclaims JSON array
+    for (let i = 0; i < pending_claims.length; i++)
+        pending_claims_JSON.push(pending_claims[i].toJSON);
+    // Copy from completed hits array to completed hits JSON array
+    for (let i = 0; i < completed_hits.length; i++)
+        completed_hits_JSON.push(completed_hits[i].toJSON);
 }
 
 
 /**
  * Synchronizes and writes the data on the three database arrays
  * (players, hits, completed_hits) to each database file.
+ * @exports database.ts
  */
 export function save() {
     syncJSON();

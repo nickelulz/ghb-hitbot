@@ -13,39 +13,13 @@ This bot acts in parallel to a personal minecraft server.
 
 ## Commands List:
 All-Access
-* hello
-* register
-* listregisteredplayers
-* listonlineplayers
-* listbounties
-* leaderboards
-* help
-* serverinfo
-* status
-* listbounties
-
-Registered Only
-* contract
-* bounty
-* deregister
-
-Admin Only
-* editplayerdata
-* start
-
-Root Admin Only
-* admin
-
-## Ideal Commands List:
-
-All-Access
 * help
 * hello
 * leaderboards
 * listbounties
 * players
-* register [ign: ign]
-* playerstatus [player: playername]
+* register [ign: playername]
+* playerstatus [ign: playername]
 * serverinfo
 * serverstatus
 
@@ -53,6 +27,7 @@ Registered Only
 * contract [mode: set/remove/claim/accept/deny] [?target: playername] [?contractor: playername] [?hirer: playername] [?price: value]
 * bounty [mode: set/remove/claim] [?target: playername] [?hirer: playername] [?price: value]
 * deregister
+* counterclaim [mode: set/verify/reject/list] [?ign: playername]
 
 Admin Only
 * start

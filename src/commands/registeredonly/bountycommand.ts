@@ -2,7 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord
 import Command from "../../types/Command";
 import { MINIMUM_HIT_PRICE, SELF_HITS } from "../../constants";
 import Bounty from '../../types/Bounty';
-import { hits, findPlayerById, isTarget, save, findPlayerByIGN, findBounty, isHirer } from '../../database';
+import { hits, findPlayerById, isTarget, save, findPlayerByIGN, findBounty, isHirer, completed_hits, pending_claims, dm_user } from '../../database';
 import logger from "../../logger";
 
 const BountyCommand: Command = {
@@ -36,7 +36,7 @@ const BountyCommand: Command = {
         }
     ],
     run: async (client: Client, interaction: BaseCommandInteraction) => {
-        const response = new MessageEmbed();
+        const response = new MessageEmbed().setDescription("If you\'re seeing this message, something went wrong.");
         const mode = String(interaction.options.get("mode")?.value);
         const target = findPlayerByIGN(String(interaction.options.get("target")?.value));
         const user = findPlayerById(interaction.user.id);
@@ -101,15 +101,9 @@ const BountyCommand: Command = {
                         response.setDescription("❌ The bounty you intend to remove was not found. Make sure that you are matching the players correctly, and check with \`/listbounties\`. Alternatively, you might have already removed it. :)");
                     else
                     {
-                        // User is not the placer of this bounty
-                        if (!user.equals(bounty.placer))
-                            response.setDescription(`❌ You are not the player who placed this hit! ${bounty.placer.toString} placed this!`);
-
-                        else {
-                            hits.splice(hits.indexOf(bounty), 1);
-                            response.description = `✅ Removed listed bounty against player ${bounty.target.ign} for ${bounty.price} diamonds!`;
-                            logger.info(`Player ${user.ign} removed their hit on ${bounty.target.ign} for ${bounty.price} diamonds.`);
-                        }
+                        hits.splice(hits.indexOf(bounty), 1);
+                        response.description = `✅ Removed listed bounty against player ${bounty.target.ign} for ${bounty.price} diamonds!`;
+                        logger.info(`Player ${user.ign} removed their hit on ${bounty.target.ign} for ${bounty.price} diamonds.`);
                     }
                     break;
                 }
@@ -130,21 +124,18 @@ const BountyCommand: Command = {
                         if (!bounty)
                             response.setDescription("❌ The bounty you intend to claim was not found. Make sure that you are matching the players correctly, and check with \`/listbounties\`");
 
+                        // user is target
+                        else if (user.equals(bounty.target))    
+                            response.setDescription("❌ You cannot claim your own hit this way. To claim hits placed against you, use \`/counterclaim\`");
+
+                        // Success
                         else 
                         {
-                            logger.info(`User ${user.ign} claimed bounty against player ${bounty.target.ign} placed by user ${bounty.placer.ign} for ${bounty.price} diamonds.`);
-
-                            if (user.equals(bounty.target))
-                                response.description = `✅ Counterclaimed bounty placed by ${bounty.placer.ign} against you ${bounty.target.ign}!`;
-                            else {
-                                response.description = `✅ Claimed bounty against player ${bounty.target.ign} for 💰 ${bounty.price} diamonds!`;
-                                bounty.target.deathCount++;
-                            }
-
-                            user.killCount++;
-                            user.lastPlacedHit = bounty.place_time;
-                            bounty.target.lastTargetedHit = bounty.place_time;
+                            logger.info(`User ${user.ign} is attempting to claim bounty against player ${bounty.target.ign} placed by user ${bounty.placer.ign} for ${bounty.price} diamonds.`);
+                            response.setDescription(`✅ Successfully attempting to claim bounty against player ${bounty.target.ign} for 💰 ${bounty.price} diamonds. Once it is verified by an administrator, you\'re all set.`);
+                            dm_user(hirer, new MessageEmbed().setDescription(`${user.ign} is attempting to claim your hit on ${bounty.target.ign}. It is now awaiting administrator verification.`));
                             hits.splice(hits.indexOf(bounty), 1);
+                            pending_claims.push(bounty);
                         }
                     }
                     break;

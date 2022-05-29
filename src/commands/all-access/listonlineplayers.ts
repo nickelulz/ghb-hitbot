@@ -11,7 +11,7 @@ const ListOnlinePlayers: Command = {
 
         const data: any = getServerStatus();
         if (!data.online)
-            response.setDescription("No players are currently online.");
+            response.setDescription("👍 No players are currently online.");
         else {
             response.setTitle("PLAYERS");
             response.setDescription(`${data.players.online}/${data.players.max} players online.\n\n`);

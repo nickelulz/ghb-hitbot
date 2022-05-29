@@ -1,11 +1,9 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
-import { client } from '../../main'
 import Command from "../../types/Command";
 import { ALLOW_MULTIPLE_PENDING_CONTRACTS, MINIMUM_HIT_PRICE, SELF_HITS } from "../../constants";
 import Contract from '../../types/Contract';
-import { hits, findPlayerById, isTarget, save, findPlayerByIGN, isContractor, isHirer, findContract } from '../../database';
+import { hits, findPlayerById, isTarget, save, findPlayerByIGN, isContractor, isHirer, findContract, pending_claims, dm_user } from '../../database';
 import logger from "../../logger";
-import Player from "../../types/Player";
 
 const ContractCommand: Command = {
     name: "contract",
@@ -174,24 +172,17 @@ const ContractCommand: Command = {
                         if (!contract)
                             response.setDescription("❌ The contract you intend to claim was not found. Make sure that you are matching the players correctly, and check with \`/contract view\`");
 
-                        // Success
-                        else 
-                        {
-                            logger.info(`User ${user.ign} claimed contract against player ${contract.target.ign} placed by user ${contract.placer.ign} for ${contract.price} diamonds.`);
+                        // user is target
+                        else if (user.equals(contract.target))    
+                            response.setDescription("❌ You cannot claim your own hit this way. To claim hits placed against you, use \`/counterclaim\`");
 
-                            if (user.equals(contract.target)) {
-                                response.description = `✅ Counterclaimed contract placed by ${contract.placer.ign} against you ${contract.target.ign}!`;
-                                contract.contractor.deathCount++;
-                            }
-                            else {
-                                response.description = `✅ Claimed contract against player ${contract.target.ign} for 💰 ${contract.price} diamonds!`;
-                                contract.target.deathCount++;
-                            }
-
-                            user.killCount++;
-                            user.lastPlacedHit = contract.place_time;
-                            contract.target.lastTargetedHit = contract.place_time;
+                        // success
+                        else {
+                            logger.info(`User ${user.ign} is attempting to claim contract against player ${contract.target.ign} placed by user ${contract.placer.ign} for ${contract.price} diamonds.`);
+                            response.setDescription(`✅ Attempting to claim contract against player ${contract.target.ign} for 💰 ${contract.price} diamonds! Once it has been verified by an administrator, it will be completed.`);
+                            dm_user(hirer, new MessageEmbed().setDescription(`${user.ign} is attempting to claim your hit on ${contract.target.ign}. It is now awaiting administrator verification.`));
                             hits.splice(hits.indexOf(contract), 1);
+                            pending_claims.push(contract);
                         }
                     }
                     break;
@@ -301,21 +292,5 @@ const ContractCommand: Command = {
         });
     }
 }; 
-
-function dm_user(user: Player, message: MessageEmbed): void {
-    // DM hirer with contractor response
-    Promise.resolve(client.users.fetch(user.discordId)).then((user_discord: DiscordJS.User | undefined) => {
-        if (user_discord === undefined)
-            logger.error(`User ${user.ign} has an invalid discord ID not found in bot cache. (@56-respondcontact.ts)`);
-        else {
-            try {
-                user_discord.send({ embeds: [ message ] });
-            }
-            catch (err: any) {
-                logger.warn(`Cannot message user ${user.ign}.`);
-            }
-        }
-    });
-}
 
 export default ContractCommand;
