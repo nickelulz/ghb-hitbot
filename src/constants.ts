@@ -53,7 +53,7 @@ export const AUTO_START: boolean = false;
  * @type boolean
  * @constant
  */
-export const DEBUG_MODE: boolean = true;
+export const DEBUG_MODE: boolean = false;
 
 /**
  * Whether or not players can place hits on themselves.

@@ -1,5 +1,5 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
-import { findHitByTarget, findPlayerById, findPlayerByIGN, hits, isTarget, pending_claims, save, completed_hits, dm_user } from "../../database";
+import { findHitByTarget, findPlayerById, findPlayerByIGN, hits, isTarget, pending_claims, save, completed_hits, dm_user, players } from "../../database";
 import Contract from '../../types/Contract'
 import Command from "../../types/Command";
 
@@ -34,8 +34,12 @@ const EvaluateClaim: Command = {
             switch (mode) {
                 case "verify": 
                 {
-                    const placer = findPlayerByIGN(String(interaction.options.get("ign")?.value));
-                    if (!user.isAdmin)
+                    const placer_string = String(interaction.options.get("ign")?.value);
+                    const placer = findPlayerByIGN(placer_string);
+
+                    if (placer_string === "undefined" || placer_string === undefined)
+                        response.setDescription("❌ You must set the placer.");
+                    else if (!user.isAdmin)
                         response.setDescription("❌ This command requires administrator permissions.");
                     else if (!placer)
                         response.setDescription("❌ Could not find the placer of this counterclaim!");
@@ -66,8 +70,12 @@ const EvaluateClaim: Command = {
 
                 case "reject": 
                 {
-                    const placer = findPlayerByIGN(String(interaction.options.get("ign")?.value));
-                    if (!user.isAdmin)
+                    const placer_string = String(interaction.options.get("ign")?.value);
+                    const placer = findPlayerByIGN(placer_string);
+
+                    if (placer_string === "undefined" || placer_string === undefined)
+                        response.setDescription("❌ You must set the placer.");
+                    else if (!user.isAdmin)
                         response.setDescription("❌ This command requires administrator permissions.");
                     else if (!placer)
                         response.setDescription("❌ Could not find the placer of this counterclaim!");
@@ -92,7 +100,7 @@ const EvaluateClaim: Command = {
                         response.setDescription("❌ This command requires administrator permissions.");
                     else {
                         for (let i = 0; i < pending_claims.length; i++)
-                            response.description += `${i+1}: ${pending_claims[i].target}->${pending_claims[i].placer}. Claimed at ${pending_claims[i].claim_time}`;
+                            response.description += `${i+1}: ${pending_claims[i].target.ign}->${pending_claims[i].placer.ign}. Claimed at ${pending_claims[i].claim_time?.toLocaleDateString}`;
                         if (response.description == "")
                             response.setDescription("👍 There are no claims pending verification.");
                         else

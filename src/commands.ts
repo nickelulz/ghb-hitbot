@@ -28,29 +28,29 @@ import Admin from "./commands/rootadminonly/admin"
 // Command Registry
 const commands: Command[] = [
     // Non-Registered User Commands
-    // Hello, 
-    // ListRegisteredPlayers, 
-    // Register,
-    // Help,
-    // ServerInfo,
-    // Status,
-    // ListOnlinePlayers,
-    // Leaderboards,
-    // ListBounties,
+    Hello, 
+    ListRegisteredPlayers, 
+    Register,
+    Help,
+    ServerInfo,
+    Status,
+    ListOnlinePlayers,
+    Leaderboards,
+    ListBounties,
 
     // Registered User Commands
-    //BountyCommand,
+    BountyCommand,
     ContractCommand,
-    // DeRegister,
-    // CounterClaim,
+    DeRegister,
+    CounterClaim,
 
     // Admin Only Commands
-    // Start,
-    // EditPlayerData,
-    // EvaluateClaim,
+    Start,
+    EditPlayerData,
+    EvaluateClaim,
 
     // Root Admin Only Commands
-    // Admin
+    Admin
 ];
 
 export default commands;

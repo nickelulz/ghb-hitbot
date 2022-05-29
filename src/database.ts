@@ -61,7 +61,7 @@ export function findPlayerById(discordId: string): Player | false {
  */
 export function findPlayerByIGN(ign: string): Player | false {
     for (let i = 0; i < players.length; i++)
-        if (players[i].ign === ign)
+        if (players[i].ign == ign)
             return players[i];
     return false;
 }
@@ -342,14 +342,28 @@ export function save() {
 
     fs.writeFile(__dirname + '/databases/hits.json', JSON.stringify(hits_JSON, null, 2), (err) => {
         if (err) {
-            logger.error(err + " (@131-database.ts)");
+            logger.error(err);
             return;
         }
     });
 
     fs.writeFile(__dirname + '/databases/players.json', JSON.stringify(players_JSON, null, 2), (err) => {
         if (err) {
-            logger.error(err + " (@138-database.ts)");
+            logger.error(err);
+            return;
+        }
+    });
+
+    fs.writeFile(__dirname + '/databases/pending_claims.json', JSON.stringify(pending_claims_JSON, null, 2), (err) => {
+        if (err) {
+            logger.error(err);
+            return;
+        }
+    });
+
+    fs.writeFile(__dirname + '/databases/completed_hits.json', JSON.stringify(completed_hits_JSON, null, 2), (err) => {
+        if (err) {
+            logger.error(err);
             return;
         }
     });

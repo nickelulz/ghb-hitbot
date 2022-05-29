@@ -7,7 +7,7 @@ import logger from "../../logger";
 
 const ContractCommand: Command = {
     name: "contract",
-    description: "The blanket command for interfacing with contracts. Set a new one, Remove a contract you already placed, or Claim a contract you are the contractor for, or Accept/Deny a pending contract.",
+    description: "The blanket command for interfacing with contracts.",
     type: "CHAT_INPUT",
     options: [
         {
@@ -18,8 +18,8 @@ const ContractCommand: Command = {
         },
         {
             name: "target",
-            description: "The ign of the target of this contract.",
-            required: true,
+            description: "The ign of the target of this contract (setting only)",
+            required: false,
             type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING
         },
         {
@@ -44,35 +44,49 @@ const ContractCommand: Command = {
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const response = new MessageEmbed();
         const mode = String(interaction.options.get("mode")?.value);
-        const target = findPlayerByIGN(String(interaction.options.get("target")?.value));
         const user = findPlayerById(interaction.user.id);
 
         // User is not registered
         if (!user)
             response.setDescription("❌ You are NOT a registered user! Use \`/register\` to register to use this command.");
 
-        // Target is not registered
-        else if (!target)
-            response.setDescription("❌ The target of this hit is NOT a registered user! (And therefore, was not found in the registry.)");
-
         else {
             switch (mode) 
             {
                 case "set": 
                 {
-                    const price = Number(interaction.options.get("price")?.value);
-                    const contractor = findPlayerByIGN(String(interaction.options.get("contractor")?.value));
+                    const target_string = String(interaction.options.get("target")?.value)
+                    const target = findPlayerByIGN(target_string);
+                    const price_string = interaction.options.get("price")?.value;
+                    const contractor_string = String(interaction.options.get("contractor")?.value);
+                    const price = Number(price_string);
+                    const contractor = findPlayerByIGN(contractor_string);
 
-                    if (price < MINIMUM_HIT_PRICE)
-                        response.setDescription(`Price is too low! *The Minimum price for a hit is ${MINIMUM_HIT_PRICE} diamonds.*`);
+                    if (price_string === undefined || price_string === "undefined")
+                        response.setDescription("❌ You have to set a price!");
+
+                    else if (contractor_string === undefined || contractor_string === "undefined")
+                        response.setDescription("❌ You have to set a contractor!");
+
+                    else if (target_string === undefined || target_string === "undefined")
+                        response.setDescription("❌ You have to set a target!");
+
+                    else if (price < MINIMUM_HIT_PRICE)
+                        response.setDescription(`❌ Price is too low! *The Minimum price for a hit is ${MINIMUM_HIT_PRICE} diamonds.*`);
+
+                    else if (!target)
+                        response.setDescription("❌ The target was not found in the registry. Make sure you are spelling their name correctly, otherwise they are not a registered user.");
                     
                     // contractor not found
                     else if (!contractor)
-                        response.setDescription("❌ Your intended contractor is NOT a registered user! They have to be registered to contract with them!");
+                        response.setDescription("❌ The contractor was not found in the registry. Make sure you are spelling their name correctly, otherwise they are not a registered user.");
 
                     // Target is Self
                     else if (user.equals(target) && !SELF_HITS)
                         response.setDescription("❌ You cannot place a hit on yourself! *(unless you\'re into that sort of thing...)*");
+
+                    else if (contractor.equals(target))
+                        response.setDescription("❌ The contractor cannot be the target.");
 
                     // User already has an active hit
                     else if (isHirer(user))
@@ -104,23 +118,7 @@ const ContractCommand: Command = {
                         hits.push(new Contract(user, target, price, current_time, contractor, true));
                         user.lastPlacedHit = current_time;
                         response.description = `✅ Successfully set new contract for ${contractor.ign} on ${target.ign} for ${price} diamonds. Now it needs to be confirmed by the user.`;
-
-                        // DM the contractor with the proposition
-                        Promise.resolve(client.users.fetch(contractor.discordId)).then((contractor_discord: DiscordJS.User | undefined) => {
-                            if (contractor_discord === undefined)
-                                logger.error(`User ${contractor.ign} has an invalid discord ID not found in bot cache. (@110-contractcommand.ts)`);
-                            else {
-                                try {
-                                    contractor_discord.send({ embeds: [
-                                        new MessageEmbed()
-                                            .setDescription(`❓ ${user.ign} wants to contract you for a hit on ${target.ign} for ${price} diamonds. Use \`/contract [accept/deny] ${user.ign}\` to accept or deny it!`)
-                                    ] });
-                                } catch (err: any) {
-                                    logger.error(`Cannot message user ${contractor.ign}.`);
-                                }
-                            }
-                        });
-
+                        dm_user(contractor, new MessageEmbed().setDescription(`❓ ${user.ign} wants to contract you for a hit on ${target.ign} for ${price} diamonds. Use \`/contract mode:[accept/deny] target:${target.ign} hirer:${user.ign}\` to accept or deny it!`));
                         logger.info(`Player ${user.ign} placed new hit on ${target.ign}`);
                     }
     
@@ -129,9 +127,14 @@ const ContractCommand: Command = {
                 
                 case "remove": 
                 {
-                    const contractor = findPlayerByIGN(String(interaction.options.get("contractor")?.value));
+                    const contractor_string = String(interaction.options.get("contractor")?.value);
+                    const contractor = findPlayerByIGN(contractor_string);
+
+                    if (contractor_string === "undefined" || contractor_string === undefined)
+                        response.setDescription("❌ You have to specify the contractor.");
+
                     // Contractor not found
-                    if (!contractor)
+                    else if (!contractor)
                         response.setDescription("❌ The contactor you selected was not found in the player registry. Either they are not registered or the bot is broken.");
 
                     else {
@@ -158,7 +161,11 @@ const ContractCommand: Command = {
                 
                 case "claim": 
                 {
-                    const hirer = findPlayerByIGN(String(interaction.options.get("hirer")?.value));
+                    const hirer_string = String(interaction.options.get("hirer")?.value);
+                    const hirer = findPlayerByIGN(hirer_string);
+
+                    if (hirer_string === undefined || hirer_string === "undefined")
+                        response.setDescription("❌ You have to specify the hirer.");
 
                     // Hirer not found
                     if (!hirer)
@@ -171,6 +178,12 @@ const ContractCommand: Command = {
                         // contract not found
                         if (!contract)
                             response.setDescription("❌ The contract you intend to claim was not found. Make sure that you are matching the players correctly, and check with \`/contract view\`");
+
+                        else if (!user.equals(contract.contractor))
+                            response.setDescription("❌ You are not the contractor for this hit.");
+
+                        else if (contract.pending)
+                            response.setDescription("❌ You have to accept this hit before you can claim it.");
 
                         // user is target
                         else if (user.equals(contract.target))    
@@ -223,10 +236,14 @@ const ContractCommand: Command = {
 
                 case "accept":
                 {
-                    const hirer = findPlayerByIGN(String(interaction.options.get("hirer")?.value));
+                    const hirer_string = String(interaction.options.get("hirer")?.value);
+                    const hirer = findPlayerByIGN(hirer_string);
+
+                    if (hirer_string === "undefined" || hirer_string === undefined)
+                        response.setDescription("❌ You have to specify the hirer.");
 
                     // Hirer not found
-                    if (!hirer)
+                    else if (!hirer)
                         response.setDescription("❌ The hirer of this hit is not a registered user. (And therefore, not found in the registry.)");
 
                     // User already has an active contract
@@ -253,10 +270,14 @@ const ContractCommand: Command = {
 
                 case "deny":
                 {
-                    const hirer = findPlayerByIGN(String(interaction.options.get("hirer")?.value));
+                    const hirer_string = String(interaction.options.get("hirer")?.value);
+                    const hirer = findPlayerByIGN(hirer_string);
+
+                    if (hirer_string === "undefined" || hirer_string === undefined)
+                        response.setDescription("❌ You have to specify the hirer.");
 
                     // Hirer not found
-                    if (!hirer)
+                    else if (!hirer)
                         response.setDescription("❌ The hirer of this hit is not a registered user. (And therefore, not found in the registry.)");
 
                     else {

@@ -14,7 +14,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/main.ts"
+    "start": "ts-node src/main.ts",
+    "resetdb": "rm $PWD/src/databases/players.json $PWD/src/databases/hits.json $PWD/src/databases/completed_hits.json $PWD/src/databases/pending_claims.json && touch $PWD/src/databases/players.json $PWD/src/databases/hits.json $PWD/src/databases/completed_hits.json $PWD/src/databases/pending_claims.json"
   },
   "author": "nickelulz",
   "license": "ISC"

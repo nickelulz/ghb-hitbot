@@ -7,7 +7,7 @@ import logger from "../../logger";
 
 const BountyCommand: Command = {
     name: "bounty",
-    description: "The blanket command for interfacing with bounties. Set a new one, Remove a bounty you already placed, or Claim a listed bounty.",
+    description: "The blanket command for interfacing with bounties.",
     type: "CHAT_INPUT",
     options: [
         {
@@ -54,9 +54,14 @@ const BountyCommand: Command = {
             {
                 case "set": 
                 {
-                    const price = Number(interaction.options.get("price")?.value);
-                    if (price < MINIMUM_HIT_PRICE)
-                        response.setDescription(`Price is too low! *The Minimum price for a hit is ${MINIMUM_HIT_PRICE} diamonds.*`);
+                    const price_string = String(interaction.options.get("price")?.value);
+                    const price = Number(price_string);
+
+                    if (price_string === "undefined" || price_string === undefined)
+                        response.setDescription("❌ You must set a price.");
+
+                    else if (price < MINIMUM_HIT_PRICE)
+                        response.setDescription(`❌ Price is too low! *The Minimum price for a hit is ${MINIMUM_HIT_PRICE} diamonds.*`);
 
                     else 
                     {
@@ -110,10 +115,14 @@ const BountyCommand: Command = {
                 
                 case "claim": 
                 {
-                    const hirer = findPlayerByIGN(String(interaction.options.get("hirer")?.value));
+                    const hirer_string = String(interaction.options.get("hirer")?.value);
+                    const hirer = findPlayerByIGN(hirer_string);
+
+                    if (hirer_string === undefined || hirer_string === "undefined")
+                        response.setDescription("❌ You have to specify the hirer.");
 
                     // Hirer not found
-                    if (!hirer)
+                    else if (!hirer)
                         response.setDescription("❌ The hirer of this hit is not a registered user. (And therefore, not found in the registry.)");
 
                     else 
