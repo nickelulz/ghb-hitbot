@@ -288,6 +288,7 @@ const ContractCommand: Command = {
                         // Success
                         else {
                             response.setDescription(`🟢 Accepted contract from ${contract.placer.ign} on ${contract.target.ign} for ${contract.price} diamonds.`);
+                            logger.info(`${user.ign} accepted contract from ${contract.placer.ign} on ${contract.target.ign} for ${contract.price} diamonds.`);
                             const hirer_response = new MessageEmbed().setDescription(`🟢 ${user.ign} accepted your contract kill on ${contract.target.ign} for ${contract.price} diamonds.`);
                             contract.pending = false;
                             dm_user(hirer, hirer_response);
@@ -319,6 +320,7 @@ const ContractCommand: Command = {
                         // Success
                         else {
                             response.setDescription(`🛑 Denied contract from ${contract.placer.ign} on ${contract.target.ign} for ${contract.price} diamonds.`);
+                            logger.info(`${user.ign} denied contract from ${contract.placer.ign} on ${contract.target.ign} for ${contract.price} diamonds.`);
                             const hirer_response = new MessageEmbed().setDescription(`🛑 ${user.ign} denied your contract kill on ${contract.target.ign} for ${contract.price} diamonds.`);
                             hits.splice(hits.indexOf(contract), 1);
                             hirer.lastPlacedHit = false;

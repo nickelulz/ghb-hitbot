@@ -2,6 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord
 import { findPlayerById, save } from "../../database";
 import Command from "../../types/Command";
 import { COMMAND_ERROR_MESSAGES } from "../../constants";
+import logger from "../../logger";
 
 const ChangeIGN: Command = {
     name: "changeign",
@@ -27,6 +28,7 @@ const ChangeIGN: Command = {
             const oldIGN = user.ign;
             user.ign = newIGN;
             response.setDescription(`✅ Changed your IGN from ${oldIGN} to ${newIGN}`);
+            logger.info(`Player ${oldIGN} changed their IGN to ${newIGN}.`)
             save();
         }
 

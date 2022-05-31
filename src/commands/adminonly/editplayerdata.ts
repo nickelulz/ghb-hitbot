@@ -1,4 +1,5 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
+import logger from "../../logger";
 import { COMMAND_ERROR_MESSAGES } from "../../constants";
 import { findPlayerById, findPlayerByIGN, save } from "../../database";
 import Command from "../../types/Command";
@@ -52,15 +53,19 @@ const EditPlayerData: Command = {
             {
                 case "kills": 
                 {
+                    const old = player.killCount
                     player.killCount = amount;
                     response.setDescription(`✅ Set user ${player.ign}\'s kills to ${amount}`);
+                    logger.info(`${user.ign} set ${player.ign}\'s kills from ${old} to ${amount}.`);
                     break;
                 }
 
                 case "deaths":
                 {
+                    const old = player.deathCount;
                     player.deathCount = amount;
                     response.setDescription(`✅ Set user ${player.ign}\'s deaths to ${amount}`);
+                    logger.info(`${user.ign} set ${player.ign}\'s deaths from ${old} to ${amount}.`);
                     break;
                 }
 

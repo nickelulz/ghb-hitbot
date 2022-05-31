@@ -2,6 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord
 import { findHitByTarget, findPlayerById, hits, isTarget, pending_claims, save } from "../../database";
 import Command from "../../types/Command";
 import { COMMAND_ERROR_MESSAGES } from "../../constants";
+import logger from "../../logger";
 
 const CounterClaim: Command = {
     name: "counterclaim",
@@ -29,7 +30,10 @@ const CounterClaim: Command = {
             else {
                 //  admin verification?
                 response.setDescription("✅ Attempting to counterclaim this hit. Once it has been *verified* by an administator, it will be registered as completed.");
+                logger.info(`${user.ign} counterclaimed hit against them placed by ${hit.placer.ign}`);
                 hits.splice(hits.indexOf(hit), 1);
+                hit.claimer = user;
+                hit.claim_time = new Date();
                 pending_claims.push(hit);
                 save();
             }

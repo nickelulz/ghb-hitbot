@@ -99,7 +99,7 @@ const BountyCommand: Command = {
                             user.lastPlacedHit = current_time;
                             response.setDescription(`✅ Successfully placed new hit on player ${target.ign}`);
                             dm_user(target, new MessageEmbed().setDescription(`:warning:  Be careful, a new **Bounty** was just placed on your head for ${price} diamonds by ${user.ign}!`));
-                            logger.info(`Player ${user.ign} placed new hit on ${target.ign}`);
+                            logger.info(`Player ${user.ign} placed new hit on ${target.ign}.`);
                         }
                     }
     

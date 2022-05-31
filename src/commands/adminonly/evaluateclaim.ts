@@ -3,6 +3,7 @@ import { findPlayerById, findPlayerByIGN, pending_claims, save, completed_hits, 
 import Contract from '../../types/Contract'
 import Command from "../../types/Command";
 import { COMMAND_ERROR_MESSAGES } from "../../constants";
+import logger from "../../logger";
 
 const EvaluateClaim: Command = {
     name: "evaluateclaim",
@@ -50,6 +51,7 @@ const EvaluateClaim: Command = {
                             response.setDescription("❌ Could not find a pending claim of this user.");
                         else {
                             response.setDescription(`✅ Verified claim from ${placer.ign}.`);
+                            logger.info(`${user.ign} verified hit claim from ${placer.ign} on hit placed by ${claimed_hit.placer.ign} on ${claimed_hit.target.ign}.`);
                             dm_user(placer, new MessageEmbed().setDescription(`✅ Your claim on a hit placed by player ${claimed_hit.placer.ign} was verified by administrator ${user.ign}.`));
                             dm_user(claimed_hit.placer, new MessageEmbed().setDescription(`✅ Your hit on ${claimed_hit.target.ign} was completed by ${placer.ign}. You now owe them ${claimed_hit.price} diamonds.`));
                             pending_claims.splice(pending_claims.indexOf(claimed_hit), 1);
@@ -88,6 +90,7 @@ const EvaluateClaim: Command = {
                             response.setDescription("❌ Could not find a pending claim of this user.");
                         else {
                             response.setDescription(`✅ Rejected counterclaim from ${placer.ign}.`);
+                            logger.info(`${user.ign} rejected hit claim from ${placer.ign} on hit placed by ${claimed_hit.placer.ign} on ${claimed_hit.target.ign}.`);
                             pending_claims.splice(pending_claims.indexOf(claimed_hit), 1);
                             dm_user(placer, new MessageEmbed().setDescription(`❌ Your claim on a hit placed by ${claimed_hit.placer.ign} against player ${claimed_hit.placer.ign} was rejected by administrator ${user.ign}.`));
                             dm_user(claimed_hit.placer, new MessageEmbed().setDescription(`${placer.ign} attempted to claim your hit placed against ${claimed_hit.target.ign}, but it was rejected by administrator ${user.ign}`));
