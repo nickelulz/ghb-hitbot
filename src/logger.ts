@@ -1,4 +1,5 @@
 import log4js from 'log4js'
+import { DEBUG_MODE } from './constants';
 
 const config = {
   appenders: {
@@ -18,7 +19,7 @@ const config = {
         }
     }
   },
-  categories: { default: { appenders: ['out'], level: 'info' } }
+  categories: { default: { appenders: ['out'], level: 'all' } }
 };
 
 config.appenders.file.file += new Date().toDateString();

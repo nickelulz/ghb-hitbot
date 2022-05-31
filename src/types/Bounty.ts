@@ -10,8 +10,8 @@ import Player from './Player';
  */
 export default class Bounty extends Hit {
 
-    constructor(placer: Player, target: Player, price: number, place_time: Date, claim_time?: Date) {
-        super(placer, target, price, place_time, claim_time);
+    constructor(placer: Player, target: Player, price: number, place_time: Date, claim_time?: Date, claimer?: Player) {
+        super(placer, target, price, place_time, claim_time, claimer);
     }
 
     /**
@@ -27,16 +27,18 @@ export default class Bounty extends Hit {
      * @override
      */
     get toJSON(): any {
-        const place_time_string: string = super.place_time.toISOString();
-        const claim_time_string: string = (this.claim_time === undefined) ? "none" : this.claim_time.toISOString();
+        const place_time_string: string = this.place_time.toLocaleString();
+        const claim_time_string: string = (this.claim_time === undefined) ? "none" : this.claim_time.toLocaleString();
+        const claimer_string: string = (this.claimer === undefined) ? "none" : this.claimer.ign;
 
         return { 
             type: "bounty",
-            placer: super.placer.ign, 
-            target: super.target.ign, 
-            price: super.price, 
+            placer: this.placer.ign, 
+            target: this.target.ign, 
+            price: this.price, 
             datePlaced: place_time_string,
-            dateClaimed: claim_time_string
+            dateClaimed: claim_time_string,
+            claimer: claimer_string
         };
     }
 

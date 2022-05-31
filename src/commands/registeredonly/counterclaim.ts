@@ -2,6 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord
 import { findHitByTarget, findPlayerById, findPlayerByIGN, hits, isTarget, pending_claims, save, completed_hits, dm_user } from "../../database";
 import Contract from '../../types/Contract'
 import Command from "../../types/Command";
+import { COMMAND_ERROR_MESSAGES } from "../../constants";
 
 const CounterClaim: Command = {
     name: "counterclaim",
@@ -13,7 +14,7 @@ const CounterClaim: Command = {
 
         // User not found in registry
         if (!user)
-            response.setDescription("❌ You are NOT a registered user! Use \`/register\` to register to use this command.");
+            response.setDescription(COMMAND_ERROR_MESSAGES.NOT_REGISTERED);
 
         // User is not a target
         else if (!isTarget(user))

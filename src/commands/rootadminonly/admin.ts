@@ -1,7 +1,7 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../../types/Command";
 import { findPlayerByIGN, findPlayerById, save } from "../../database";
-import { ADMIN_TOKEN } from "../../constants"
+import { ADMIN_TOKEN, COMMAND_ERROR_MESSAGES } from "../../constants"
 import logger from "../../logger";
 
 const Admin: Command = {
@@ -30,15 +30,15 @@ const Admin: Command = {
 
         // User not registered/not found
         if (!user)
-            response.description = "❌ You are not a registered user! (make sure to use \`/register\` to register!)";
+            response.setDescription(COMMAND_ERROR_MESSAGES.NOT_REGISTERED);
 
         // Target not registered/not found
         else if (!target)
-            response.description = "❌ The user you selected to give admin to is not a registered user!";
+            response.setDescription(COMMAND_ERROR_MESSAGES.PLAYER_NOT_FOUND);
 
         // User is not ROOT admin
         else if (!(user.isAdmin && user.discordId === ADMIN_TOKEN))
-            response.description = "❌ You are not the **root** admin! (Only the bot configuration manager has root access!)";
+            response.setDescription(COMMAND_ERROR_MESSAGES.NOT_ROOT_ADMIN);
         
         else {
             switch (mode) {

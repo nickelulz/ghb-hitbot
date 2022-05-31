@@ -2,6 +2,7 @@ import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord
 import { findHitByTarget, findPlayerById, findPlayerByIGN, hits, isTarget, pending_claims, save, completed_hits, dm_user, players } from "../../database";
 import Contract from '../../types/Contract'
 import Command from "../../types/Command";
+import { COMMAND_ERROR_MESSAGES } from "../../constants";
 
 const EvaluateClaim: Command = {
     name: "evaluateclaim",
@@ -28,7 +29,7 @@ const EvaluateClaim: Command = {
 
         // User not found in registry
         if (!user)
-            response.setDescription("❌ You are NOT a registered user! Use \`/register\` to register to use this command.");
+            response.setDescription(COMMAND_ERROR_MESSAGES.NOT_REGISTERED);
 
         else {
             switch (mode) {
@@ -38,17 +39,17 @@ const EvaluateClaim: Command = {
                     const placer = findPlayerByIGN(placer_string);
 
                     if (placer_string === "undefined" || placer_string === undefined)
-                        response.setDescription("❌ You must set the placer.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_HIRER);
                     else if (!user.isAdmin)
-                        response.setDescription("❌ This command requires administrator permissions.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NOT_ADMIN);
                     else if (!placer)
-                        response.setDescription("❌ Could not find the placer of this counterclaim!");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.HIRER_NOT_FOUND);
                     else {
-                        const claimed_hit = pending_claims.find(hit => hit.target.equals(placer));
+                        const claimed_hit = pending_claims.find(hit => hit.claimer?.equals(placer));
                         if (claimed_hit === undefined)
-                            response.setDescription("❌ Could not find a pending counterclaim of this user.");
+                            response.setDescription("❌ Could not find a pending claim of this user.");
                         else {
-                            response.setDescription(`✅ Verified counterclaim from ${placer.ign}.`);
+                            response.setDescription(`✅ Verified claim from ${placer.ign}.`);
                             dm_user(placer, new MessageEmbed().setDescription(`✅ Your claim on a hit placed by player ${claimed_hit.placer.ign} was verified by administrator ${user.ign}.`));
                             dm_user(claimed_hit.placer, new MessageEmbed().setDescription(`✅ Your hit on ${claimed_hit.target.ign} was completed by ${placer.ign}. You now owe them ${claimed_hit.price} diamonds.`));
                             pending_claims.splice(pending_claims.indexOf(claimed_hit), 1);
@@ -59,9 +60,11 @@ const EvaluateClaim: Command = {
                             else
                                 claimed_hit.target.deathCount++;
 
-                            user.killCount++;
-                            user.lastPlacedHit = claimed_hit.place_time;
-                            claimed_hit.target.lastTargetedHit = claimed_hit.place_time;
+                            if (claimed_hit instanceof Contract)
+                                placer.lastContractedHit = new Date();
+
+                            placer.killCount++;
+                            claimed_hit.target.lastTargetedHit = new Date();
                             save();
                         }
                     }
@@ -74,15 +77,15 @@ const EvaluateClaim: Command = {
                     const placer = findPlayerByIGN(placer_string);
 
                     if (placer_string === "undefined" || placer_string === undefined)
-                        response.setDescription("❌ You must set the placer.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_HIRER);
                     else if (!user.isAdmin)
-                        response.setDescription("❌ This command requires administrator permissions.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NOT_ADMIN);
                     else if (!placer)
-                        response.setDescription("❌ Could not find the placer of this counterclaim!");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.HIRER_NOT_FOUND);
                     else {
-                        const claimed_hit = pending_claims.find(hit => hit.target.equals(placer));
+                        const claimed_hit = pending_claims.find(hit => hit.claimer?.equals(placer));
                         if (claimed_hit === undefined)
-                            response.setDescription("❌ Could not find a pending counterclaim of this user.");
+                            response.setDescription("❌ Could not find a pending claim of this user.");
                         else {
                             response.setDescription(`✅ Rejected counterclaim from ${placer.ign}.`);
                             pending_claims.splice(pending_claims.indexOf(claimed_hit), 1);
@@ -97,10 +100,10 @@ const EvaluateClaim: Command = {
                 case "list":
                 {
                     if (!user.isAdmin)
-                        response.setDescription("❌ This command requires administrator permissions.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NOT_ADMIN);
                     else {
                         for (let i = 0; i < pending_claims.length; i++)
-                            response.description += `${i+1}: ${pending_claims[i].target.ign}->${pending_claims[i].placer.ign}. Claimed at ${pending_claims[i].claim_time?.toLocaleDateString}`;
+                            response.description += `${i+1}: ${pending_claims[i] instanceof Contract ? "Contract" : "Bounty"} placed by ${pending_claims[i].placer.ign} on ${pending_claims[i].target.ign} for ${pending_claims[i].price} diamonds. Claimed at ${pending_claims[i].claim_time?.toLocaleString()} by ${pending_claims[i].claimer?.ign}\n`;
                         if (response.description == "")
                             response.setDescription("👍 There are no claims pending verification.");
                         else

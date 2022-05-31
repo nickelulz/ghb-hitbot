@@ -2,17 +2,7 @@
   {
     "discordId": "333372556830703616",
     "ign": "nickelulz",
-    "lastPlacedHit": "2022-05-29T15:40:13.929Z",
-    "lastTargetedHit": "none",
-    "lastContractedHit": "none",
-    "killCount": 0,
-    "deathCount": 0,
-    "isAdmin": true
-  },
-  {
-    "discordId": "611742737959485443",
-    "ign": "Luthor",
-    "lastPlacedHit": "none",
+    "lastPlacedHit": "5/31/2022, 5:41:00 PM",
     "lastTargetedHit": "none",
     "lastContractedHit": "none",
     "killCount": 0,
@@ -22,7 +12,7 @@
   {
     "discordId": "496452380892856340",
     "ign": "Cryonein",
-    "lastPlacedHit": "2022-05-29T15:01:49.139Z",
+    "lastPlacedHit": "none",
     "lastTargetedHit": "none",
     "lastContractedHit": "none",
     "killCount": 0,
@@ -34,9 +24,19 @@
     "ign": "Gloms_Wow",
     "lastPlacedHit": "none",
     "lastTargetedHit": "none",
+    "lastContractedHit": "5/31/2022, 5:41:00 PM",
+    "killCount": 1,
+    "deathCount": 0,
+    "isAdmin": false
+  },
+  {
+    "discordId": "611742737959485443",
+    "ign": "Luthor",
+    "lastPlacedHit": "none",
+    "lastTargetedHit": "5/31/2022, 5:41:00 PM",
     "lastContractedHit": "none",
     "killCount": 0,
-    "deathCount": 0,
+    "deathCount": 1,
     "isAdmin": false
   }
 ]

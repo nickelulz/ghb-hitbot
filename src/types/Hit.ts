@@ -32,15 +32,23 @@ export default class Hit {
 
     /**
      * The time that this hit was claimed
+     * @type Date | undefined
      */
     claim_time: Date | undefined;
 
-    constructor(placer: Player, target: Player, price: number, place_time: Date, claim_time?: Date) {
+    /**
+     * The person who claimed this hit
+     * @type Player | undefined
+     */
+    claimer: Player | undefined
+
+    constructor(placer: Player, target: Player, price: number, place_time: Date, claim_time?: Date, claimer?: Player) {
         this.placer = placer;
         this.target = target;
         this.price = price;
         this.place_time = place_time;
         this.claim_time = claim_time;
+        this.claimer = claimer;
     }
 
     /**

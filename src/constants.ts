@@ -71,10 +71,125 @@ export const SELF_HITS: boolean = false;
  */
 export const ALLOW_MULTIPLE_PENDING_CONTRACTS: boolean = true;
 
+/**
+ * Default "image not found"/Error 404 Image URL for embeds and whatnot.
+ * 
+ * @type string
+ * @constant
+ */
+export const NOT_FOUND_IMG_URL: string = "https://media.istockphoto.com/vectors/error-document-icon-vector-id1062127004?k=6&m=1062127004&s=612x612&w=0&h=94D4dEDZzXuNQ0rhw7yftXb259wNpjDMoNmcl9KvUD8="; 
 
+/**
+ * Command error messages used to edit messages across several commands.
+ * @type JSON
+ * @constant
+ */
+export const COMMAND_ERROR_MESSAGES = {
+    /**
+     * User is not registered with the bot, and command requires registry.
+     */
+    NOT_REGISTERED: "❌ You are not a registered user! Use \`/register\` to register to use this command!",
 
+    /**
+     * User is not an administrator, and command requires administrator permissions.
+     */
+    NOT_ADMIN: "❌ This command requires administrator permissions, and you aren'\t an admin.",
 
+    /**
+     * User is not the root administrator, and this command requires root administrator level permissions.
+     */
+    NOT_ROOT_ADMIN: "❌ You are not the **root** admin! (Only the bot configuration manager has root access!)",
 
+    /**
+     * Price field is undefined.
+     */
+    NO_PRICE: "❌ You must set a price.",
+
+    /**
+     * Set price (for placing a hit) is too low. (Less than MINIMUM_HIT_PRICE)
+     */
+    PRICE_TOO_LOW: `❌ Price is too low! *The Minimum price for a hit is ${MINIMUM_HIT_PRICE} diamonds.*`,
+
+    /**
+     * Target field is undefined.
+     */
+    NO_TARGET: "❌ You must set a target.",
+
+    /**
+     * Target (of hit) is not found in registry.
+     */
+    TARGET_NOT_FOUND: "❌ The target was not found in the player registry. Make sure you are spelling the name correctly, with correct capitalization.",
+
+    /**
+     * Target (of hit) already has a hit placed on them.
+     */
+    TARGET_BUSY: "❌ Your target is currently under the effect of a hit! Wait until 1 hour after that hit is completed.",
+
+    /**
+     * Target for a placed hit is the placer themself.
+     */
+    TARGET_IS_SELF: "❌ You cannot place a hit on yourself! *(unless you\'re into that sort of thing...)*",
+
+    /**
+     * Hirer of a hit already has an active hit placed on another player.
+     */
+    HIRER_BUSY: "❌ You already have an active hit out on someone. You cannot have two hits at once.",
+
+    /**
+     * Bounty is not found in registry.
+     */
+    BOUNTY_NOT_FOUND: "❌ The bounty you intend to remove was not found. Make sure that you are matching the players correctly, and check with \`/listbounties\`. Alternatively, you might have already removed it. :)",
+
+    /**
+     * Hirer field is undefined.
+     */
+    NO_HIRER: "❌ You have to specify the hirer.",
+
+    /**
+     * Hirer of a hit is not registered/not found in player registry.
+     */
+    HIRER_NOT_FOUND: "❌ The hirer of this hit is not a registered user. (And therefore, not found in the registry.)",
+
+    /**
+     * Claimer of a hit is the target of the hit (on commands that are not /counterclaim.)
+     */
+    CLAIMER_IS_TARGET: "❌ You cannot claim a hit on yourself this way. To claim hits placed against you, use \`/counterclaim\`",
+
+    /**
+     * Claimer of a hit is the placer.
+     */
+    CLAIMER_IS_HIRER: "❌ You cannot claim your own hit.",
+
+    /**
+     * Contractor field is undefined.
+     */
+    NO_CONTRACTOR: "❌ You have to set a contractor!",
+
+    /**
+     * Contractor is not found in player registry.
+     */
+    CONTRACTOR_NOT_FOUND: "❌ The contractor was not found in the registry. Make sure you are spelling their name correctly, otherwise they are not a registered user.",
+
+    /**
+     * Contractor of hit is the target of the hit.
+     */
+    CONTRACTOR_IS_TARGET: "❌ The contractor cannot be the target.",
+
+    /**
+     * Contractor of hit already has an active contract.
+     */
+    CONTRACTOR_BUSY: "❌ Your contractor already has an active contract!",
+
+    /**
+     * Contract is not found in hit database.
+     */
+    CONTRACT_NOT_FOUND: "❌ The contract you intend to remove was not found. Make sure that you are matching the players correctly, and check with \`/listbounties\`. Alternatively, you might have already removed it. :)",
+
+    /**
+     * Player not found in player database.
+     */
+    PLAYER_NOT_FOUND: "❌ The player you selected was not found in the registry. Make sure you spelled the name correctly with correct capitalization.",
+}
 
 /**
  * DO NOT CONFIGURE BEYOND HERE,

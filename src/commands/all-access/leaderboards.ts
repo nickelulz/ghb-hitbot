@@ -41,17 +41,15 @@ const Leaderboards: Command = {
 }; 
 
 /**
- * @param mode
- *  1: deathCount
- *  0: killCount
- * 
- *  selection sort
+ * Sorts player arrays based on kills or deaths.
+ * @param {Player[]} arr The array to be sorted
+ * @param {number} mode 0->killCount 1->deathCount 
  */
 function sort(arr: Player[], mode: number) {
     for (let i = 0; i < arr.length-1; i++) {
         let min = i;
         for (let j = i+1; j < arr.length; j++)
-            if (mode == 1 ? arr[j].deathCount < arr[i].deathCount : arr[j].killCount > arr[i].killCount)
+            if (mode == 1 ? arr[j].deathCount > arr[i].deathCount : arr[j].killCount > arr[i].killCount)
                 min = j;
         let temp = arr[i];
         arr[i] = arr[min];

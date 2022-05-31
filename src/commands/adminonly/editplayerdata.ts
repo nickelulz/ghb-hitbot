@@ -1,4 +1,5 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
+import { COMMAND_ERROR_MESSAGES } from "../../constants";
 import { findPlayerById, findPlayerByIGN, save } from "../../database";
 import Command from "../../types/Command";
 
@@ -28,22 +29,22 @@ const EditPlayerData: Command = {
     ],
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const user = findPlayerById(interaction.user.id);
-        const target = findPlayerByIGN(String(interaction.options.get("ign")?.value));
+        const player = findPlayerByIGN(String(interaction.options.get("ign")?.value));
         const amount = Number(interaction.options.get("amount")?.value);
         const mode = String(interaction.options.get("mode")?.value);
         const response = new MessageEmbed();
         
         // User not registered/not found
         if (!user)
-            response.setDescription("❌ You are not a registered user! (make sure to use \`/register\` to register!)");
+            response.setDescription(COMMAND_ERROR_MESSAGES.NOT_REGISTERED);
 
-        // Target not registered/not found
-        else if (!target)
-            response.setDescription("❌ The user you selected to change is not registered!");
+        // player not registered/not found
+        else if (!player)
+            response.setDescription(COMMAND_ERROR_MESSAGES.PLAYER_NOT_FOUND);
         
         // User is not an admin
         else if (!user.isAdmin)
-            response.setDescription("❌ You are not an administrator!");
+            response.setDescription(COMMAND_ERROR_MESSAGES.NOT_ADMIN);
 
         // Successful
         else {
@@ -51,15 +52,15 @@ const EditPlayerData: Command = {
             {
                 case "kills": 
                 {
-                    target.killCount = amount;
-                    response.setDescription(`✅ Set user ${target.ign}\'s kills to ${amount}`);
+                    player.killCount = amount;
+                    response.setDescription(`✅ Set user ${player.ign}\'s kills to ${amount}`);
                     break;
                 }
 
                 case "deaths":
                 {
-                    target.deathCount = amount;
-                    response.setDescription(`✅ Set user ${target.ign}\'s deaths to ${amount}`);
+                    player.deathCount = amount;
+                    response.setDescription(`✅ Set user ${player.ign}\'s deaths to ${amount}`);
                     break;
                 }
 

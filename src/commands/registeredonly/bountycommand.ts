@@ -1,6 +1,6 @@
-import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
+import DiscordJS, { BaseCommandInteraction, Client, Message, MessageEmbed } from "discord.js";
 import Command from "../../types/Command";
-import { MINIMUM_HIT_PRICE, SELF_HITS } from "../../constants";
+import { MINIMUM_HIT_PRICE, SELF_HITS, COMMAND_ERROR_MESSAGES } from "../../constants";
 import Bounty from '../../types/Bounty';
 import { hits, findPlayerById, isTarget, save, findPlayerByIGN, findBounty, isHirer, completed_hits, pending_claims, dm_user } from '../../database';
 import logger from "../../logger";
@@ -12,14 +12,14 @@ const BountyCommand: Command = {
     options: [
         {
             name: "mode",
-            description: "set/remove/claim",
+            description: "set/remove/claim/list",
             required: true,
             type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING
         },
         {
             name: "target",
             description: "The ign of the target of this bounty.",
-            required: true,
+            required: false,
             type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING
         },
         {
@@ -38,16 +38,12 @@ const BountyCommand: Command = {
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const response = new MessageEmbed().setDescription("If you\'re seeing this message, something went wrong.");
         const mode = String(interaction.options.get("mode")?.value);
-        const target = findPlayerByIGN(String(interaction.options.get("target")?.value));
         const user = findPlayerById(interaction.user.id);
 
         // User is not registered
         if (!user)
-            response.setDescription("❌ You are NOT a registered user! Use \`/register\` to register to use this command.");
+            response.setDescription(COMMAND_ERROR_MESSAGES.NOT_REGISTERED);
 
-        // Target is not registered
-        else if (!target)
-            response.setDescription("❌ The target of this hit is NOT a registered user! (And therefore, was not found in the registry.)");
 
         else {
             switch (mode) 
@@ -57,11 +53,21 @@ const BountyCommand: Command = {
                     const price_string = String(interaction.options.get("price")?.value);
                     const price = Number(price_string);
 
+                    const target_string = String(interaction.options.get("target")?.value);
+                    const target = findPlayerByIGN(target_string);
+
                     if (price_string === "undefined" || price_string === undefined)
-                        response.setDescription("❌ You must set a price.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_PRICE);
 
                     else if (price < MINIMUM_HIT_PRICE)
-                        response.setDescription(`❌ Price is too low! *The Minimum price for a hit is ${MINIMUM_HIT_PRICE} diamonds.*`);
+                        response.setDescription(COMMAND_ERROR_MESSAGES.PRICE_TOO_LOW);
+
+                    else if (target_string === "undefined" || target_string === undefined)
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_TARGET);
+
+                    // Target is not registered
+                    else if (!target)
+                        response.setDescription(COMMAND_ERROR_MESSAGES.TARGET_NOT_FOUND);
 
                     else 
                     {
@@ -69,15 +75,15 @@ const BountyCommand: Command = {
                         
                         // Target is already under effect of a hit
                         if (isTarget(target))
-                            response.setDescription("❌ Your target is currently under the effect of a hit! Wait until 1 hour after that hit is completed.");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.TARGET_BUSY);
                         
                         // Target is Self
                         else if (user.equals(target) && !SELF_HITS)
-                            response.setDescription("❌ You cannot place a hit on yourself! *(unless you\'re into that sort of thing...)*");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.TARGET_IS_SELF);
 
                         // User already has an active hit
                         else if (isHirer(user))
-                            response.setDescription("❌ You already have an active hit out on someone. You cannot have two hits at once.");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.HIRER_BUSY);
 
                         // Placer is still under cooldown
                         else if (user.hiringCooldown > 0)
@@ -92,6 +98,7 @@ const BountyCommand: Command = {
                             hits.push(new Bounty(user, target, price, current_time));
                             user.lastPlacedHit = current_time;
                             response.setDescription(`✅ Successfully placed new hit on player ${target.ign}`);
+                            dm_user(target, new MessageEmbed().setDescription(`:warning:  Be careful, a new **Bounty** was just placed on your head for ${price} diamonds by ${user.ign}!`));
                             logger.info(`Player ${user.ign} placed new hit on ${target.ign}`);
                         }
                     }
@@ -101,14 +108,28 @@ const BountyCommand: Command = {
                 
                 case "remove": 
                 {
-                    const bounty = findBounty(user, target);
-                    if (!bounty)
-                        response.setDescription("❌ The bounty you intend to remove was not found. Make sure that you are matching the players correctly, and check with \`/listbounties\`. Alternatively, you might have already removed it. :)");
-                    else
+
+                    const target_string = String(interaction.options.get("target")?.value);
+                    const target = findPlayerByIGN(target_string);
+
+                    if (target_string === "undefined" || target_string === undefined)
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_TARGET);
+
+                    // Target is not registered
+                    else if (!target)
+                        response.setDescription(COMMAND_ERROR_MESSAGES.TARGET_NOT_FOUND);
+                    
+                    else 
                     {
-                        hits.splice(hits.indexOf(bounty), 1);
-                        response.description = `✅ Removed listed bounty against player ${bounty.target.ign} for ${bounty.price} diamonds!`;
-                        logger.info(`Player ${user.ign} removed their hit on ${bounty.target.ign} for ${bounty.price} diamonds.`);
+                        const bounty = findBounty(user, target);
+                        if (!bounty)
+                            response.setDescription(COMMAND_ERROR_MESSAGES.BOUNTY_NOT_FOUND);
+                        else
+                        {
+                            hits.splice(hits.indexOf(bounty), 1);
+                            response.description = `✅ Removed listed bounty against player ${bounty.target.ign} for ${bounty.price} diamonds!`;
+                            logger.info(`Player ${user.ign} removed their hit on ${bounty.target.ign} for ${bounty.price} diamonds.`);
+                        }
                     }
                     break;
                 }
@@ -118,12 +139,22 @@ const BountyCommand: Command = {
                     const hirer_string = String(interaction.options.get("hirer")?.value);
                     const hirer = findPlayerByIGN(hirer_string);
 
+                    const target_string = String(interaction.options.get("target")?.value);
+                    const target = findPlayerByIGN(target_string);
+
                     if (hirer_string === undefined || hirer_string === "undefined")
-                        response.setDescription("❌ You have to specify the hirer.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_HIRER);
 
                     // Hirer not found
                     else if (!hirer)
-                        response.setDescription("❌ The hirer of this hit is not a registered user. (And therefore, not found in the registry.)");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.HIRER_NOT_FOUND);
+
+                    else if (target_string === "undefined" || target_string === undefined)
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_TARGET);
+
+                    // Target is not registered
+                    else if (!target)
+                        response.setDescription(COMMAND_ERROR_MESSAGES.TARGET_NOT_FOUND);
 
                     else 
                     {
@@ -131,11 +162,14 @@ const BountyCommand: Command = {
 
                         // Bounty not found
                         if (!bounty)
-                            response.setDescription("❌ The bounty you intend to claim was not found. Make sure that you are matching the players correctly, and check with \`/listbounties\`");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.BOUNTY_NOT_FOUND);
 
                         // user is target
                         else if (user.equals(bounty.target))    
-                            response.setDescription("❌ You cannot claim your own hit this way. To claim hits placed against you, use \`/counterclaim\`");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.CLAIMER_IS_TARGET);
+
+                        else if (user.equals(bounty.placer))
+                            response.setDescription(COMMAND_ERROR_MESSAGES.CLAIMER_IS_HIRER);
 
                         // Success
                         else 
@@ -144,9 +178,34 @@ const BountyCommand: Command = {
                             response.setDescription(`✅ Successfully attempting to claim bounty against player ${bounty.target.ign} for 💰 ${bounty.price} diamonds. Once it is verified by an administrator, you\'re all set.`);
                             dm_user(hirer, new MessageEmbed().setDescription(`${user.ign} is attempting to claim your hit on ${bounty.target.ign}. It is now awaiting administrator verification.`));
                             hits.splice(hits.indexOf(bounty), 1);
+                            bounty.claimer = user;
+                            bounty.claim_time = new Date();
                             pending_claims.push(bounty);
                         }
                     }
+                    break;
+                }
+
+                case "list": 
+                {
+                    response.description = "";
+                    let count = 1;
+
+                    for (let i = 0; i < hits.length; i++)
+                        if (hits[i] instanceof Bounty)
+                            response.description += count++ + " -> " + hits[i].toString + "\n";
+            
+                    if (response.description.length == 0)
+                        response.description = "👍 No bounties are currently placed!";
+            
+                    if (!user)
+                        response.description += "\n\n\`💡 Make sure to register to place hits, remove hits, and claim hits...\`";
+                    else 
+                        response.setTitle("HITS");
+            
+                    if (response.description == "")
+                        response.setDescription("❌ Error in getting the list of bounties. Try again later? :)");
+                        
                     break;
                 }
 

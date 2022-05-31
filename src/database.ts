@@ -283,6 +283,10 @@ function parseJSONToArray(json: any[], out: Hit[]) {
         const price: number = Number(json[i]["price"]);
         const datePlaced: Date = new Date(json[i]["datePlaced"]);
         const dateClaimed: Date | undefined = (json[i]["dateClaimed"] === "none") ? undefined : new Date(json[i]["dateClaimed"]);
+
+        const claimer_raw = findPlayerByIGN(json[i]["claimer"]);
+        const claimer: Player | undefined = (claimer_raw === false) ? undefined : claimer_raw; 
+
         const type: string = json[i]["type"];
         if (!placer)
             logger.error(`Invalid hit JSON at index ${i}. Placer ${json[i]["placer"]} not found in registry.`);
@@ -291,7 +295,7 @@ function parseJSONToArray(json: any[], out: Hit[]) {
         else {
             switch (type) {
                 case "bounty":
-                    out.push(new Bounty(placer, target, price, datePlaced, dateClaimed));
+                    out.push(new Bounty(placer, target, price, datePlaced, dateClaimed, claimer));
                     break;
                 case "contract":
                     const contractor = findPlayerByIGN(json[i]["contractor"]);
@@ -299,7 +303,7 @@ function parseJSONToArray(json: any[], out: Hit[]) {
                     if (!contractor)
                         logger.error(`Invalid contracted hit JSON at hit ${i}. Contractor ${json[i]["contractor"]} not found in registry.`);
                     else
-                        out.push(new Contract(placer, target, price, datePlaced, contractor, pending, dateClaimed));
+                        out.push(new Contract(placer, target, price, datePlaced, contractor, pending, dateClaimed, claimer));
                     break;
             }
         }

@@ -25,22 +25,21 @@ All-Access
 * help
 * hello
 * leaderboards
-* listbounties
 * players
 * register [ign: playername]
-* playerstatus [ign: playername]
+* players [?ign: playername]
 * serverinfo
-* serverstatus
+* status
 
 Registered Only
 * contract [mode: set/remove/claim/accept/deny] [?target: playername] [?contractor: playername] [?hirer: playername] [?price: value]
 * bounty [mode: set/remove/claim] [?target: playername] [?hirer: playername] [?price: value]
-* deregister
-* counterclaim [mode: set/verify/reject/list] [?ign: playername]
+* counterclaim
 
 Admin Only
 * start
 * editplayerdata [player: playername] [mode: kills/deaths] [newvalue: value]
+* evaluateclaim [mode: verify/reject/list] [?ign: playername]
 
 Root Admin Only
-* admin [mode: give/remove] [user: playername]
+* admin [mode: give/remove] [ign: playername]

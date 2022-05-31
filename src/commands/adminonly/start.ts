@@ -3,6 +3,7 @@ import { findPlayerById } from "../../database";
 import { startServer, getServerStatus, serverCurrentlyRunning } from "../../server"
 import Command from "../../types/Command";
 import logger from "../../logger";
+import { COMMAND_ERROR_MESSAGES } from "../../constants";
 
 const Start: Command = {
     name: "start",
@@ -14,11 +15,11 @@ const Start: Command = {
 
         // User not registered/not found
         if (!user)
-            response.description = "❌ You are not a registered user! (make sure to use \`/register\` to register!)";
+            response.description = COMMAND_ERROR_MESSAGES.NOT_REGISTERED;
         
         // User is not an admin
         else if (!user.isAdmin)
-            response.description = "❌ You are not an admin!";
+            response.description = COMMAND_ERROR_MESSAGES.NOT_ADMIN;
 
         // Attempt to start the server  
         else {

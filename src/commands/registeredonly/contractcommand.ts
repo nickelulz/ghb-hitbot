@@ -1,6 +1,6 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../../types/Command";
-import { ALLOW_MULTIPLE_PENDING_CONTRACTS, MINIMUM_HIT_PRICE, SELF_HITS } from "../../constants";
+import { ALLOW_MULTIPLE_PENDING_CONTRACTS, MINIMUM_HIT_PRICE, SELF_HITS, COMMAND_ERROR_MESSAGES } from "../../constants";
 import Contract from '../../types/Contract';
 import { hits, findPlayerById, isTarget, save, findPlayerByIGN, isContractor, isHirer, findContract, pending_claims, dm_user } from '../../database';
 import logger from "../../logger";
@@ -30,7 +30,7 @@ const ContractCommand: Command = {
         },
         {
             name: "hirer",
-            description: "The ign of the hirer of this contract. (for claiming only)",
+            description: "The ign of the hirer of this contract. (for claiming, accepting, and denying only)",
             required: false,
             type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING
         },
@@ -48,7 +48,7 @@ const ContractCommand: Command = {
 
         // User is not registered
         if (!user)
-            response.setDescription("❌ You are NOT a registered user! Use \`/register\` to register to use this command.");
+            response.setDescription(COMMAND_ERROR_MESSAGES.NOT_REGISTERED);
 
         else {
             switch (mode) 
@@ -63,42 +63,42 @@ const ContractCommand: Command = {
                     const contractor = findPlayerByIGN(contractor_string);
 
                     if (price_string === undefined || price_string === "undefined")
-                        response.setDescription("❌ You have to set a price!");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_PRICE);
 
                     else if (contractor_string === undefined || contractor_string === "undefined")
-                        response.setDescription("❌ You have to set a contractor!");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_CONTRACTOR);
 
                     else if (target_string === undefined || target_string === "undefined")
-                        response.setDescription("❌ You have to set a target!");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_TARGET);
 
                     else if (price < MINIMUM_HIT_PRICE)
-                        response.setDescription(`❌ Price is too low! *The Minimum price for a hit is ${MINIMUM_HIT_PRICE} diamonds.*`);
+                        response.setDescription(COMMAND_ERROR_MESSAGES.PRICE_TOO_LOW);
 
                     else if (!target)
-                        response.setDescription("❌ The target was not found in the registry. Make sure you are spelling their name correctly, otherwise they are not a registered user.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_TARGET);
                     
                     // contractor not found
                     else if (!contractor)
-                        response.setDescription("❌ The contractor was not found in the registry. Make sure you are spelling their name correctly, otherwise they are not a registered user.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.CONTRACTOR_NOT_FOUND);
 
                     // Target is Self
                     else if (user.equals(target) && !SELF_HITS)
-                        response.setDescription("❌ You cannot place a hit on yourself! *(unless you\'re into that sort of thing...)*");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.TARGET_IS_SELF);
 
                     else if (contractor.equals(target))
-                        response.setDescription("❌ The contractor cannot be the target.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.CONTRACTOR_IS_TARGET);
 
                     // User already has an active hit
                     else if (isHirer(user))
-                        response.setDescription("❌ You already have an active hit out on someone. You cannot have two hits at once.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.HIRER_BUSY);
 
                     // Target is already under effect of a hit
                     else if (isTarget(target))
-                        response.setDescription("⏱️ Your target is currently under the effect of a hit! Wait until 1 hour after that hit is completed.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.TARGET_BUSY);
 
                     // Contractor already has an active contract
                     else if (isContractor(contractor) && !ALLOW_MULTIPLE_PENDING_CONTRACTS)
-                        response.setDescription("❌ Your contractor already has an active contract!");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.CONTRACTOR_BUSY);
 
                     // User is still under placing cooldown
                     else if (user.hiringCooldown > 0)
@@ -131,18 +131,18 @@ const ContractCommand: Command = {
                     const contractor = findPlayerByIGN(contractor_string);
 
                     if (contractor_string === "undefined" || contractor_string === undefined)
-                        response.setDescription("❌ You have to specify the contractor.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_CONTRACTOR);
 
                     // Contractor not found
                     else if (!contractor)
-                        response.setDescription("❌ The contactor you selected was not found in the player registry. Either they are not registered or the bot is broken.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.CONTRACTOR_NOT_FOUND);
 
                     else {
                         const contract = findContract(user, contractor);
 
                         // Contract not found
                         if (!contract)
-                            response.setDescription("❌ The contract you intend to remove was not found. Make sure that you are matching the players correctly, and check with \`/listbounties\`. Alternatively, you might have already removed it. :)");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.CONTRACT_NOT_FOUND);
 
                         // User is not the user of this contract
                         else if (!user.equals(contract.placer))
@@ -165,11 +165,11 @@ const ContractCommand: Command = {
                     const hirer = findPlayerByIGN(hirer_string);
 
                     if (hirer_string === undefined || hirer_string === "undefined")
-                        response.setDescription("❌ You have to specify the hirer.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_HIRER);
 
                     // Hirer not found
                     if (!hirer)
-                        response.setDescription("❌ The hirer of this hit is not a registered user. (And therefore, not found in the registry.)");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.HIRER_NOT_FOUND);
 
                     else 
                     {
@@ -177,7 +177,7 @@ const ContractCommand: Command = {
 
                         // contract not found
                         if (!contract)
-                            response.setDescription("❌ The contract you intend to claim was not found. Make sure that you are matching the players correctly, and check with \`/contract view\`");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.CONTRACT_NOT_FOUND);
 
                         else if (!user.equals(contract.contractor))
                             response.setDescription("❌ You are not the contractor for this hit.");
@@ -187,7 +187,10 @@ const ContractCommand: Command = {
 
                         // user is target
                         else if (user.equals(contract.target))    
-                            response.setDescription("❌ You cannot claim your own hit this way. To claim hits placed against you, use \`/counterclaim\`");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.CLAIMER_IS_TARGET);
+
+                        else if (user.equals(contract.placer))
+                            response.setDescription(COMMAND_ERROR_MESSAGES.CLAIMER_IS_HIRER);
 
                         // success
                         else {
@@ -195,6 +198,8 @@ const ContractCommand: Command = {
                             response.setDescription(`✅ Attempting to claim contract against player ${contract.target.ign} for 💰 ${contract.price} diamonds! Once it has been verified by an administrator, it will be completed.`);
                             dm_user(hirer, new MessageEmbed().setDescription(`${user.ign} is attempting to claim your hit on ${contract.target.ign}. It is now awaiting administrator verification.`));
                             hits.splice(hits.indexOf(contract), 1);
+                            contract.claimer = user;
+                            contract.claim_time = new Date();
                             pending_claims.push(contract);
                         }
                     }
@@ -204,18 +209,41 @@ const ContractCommand: Command = {
                 case "view": 
                 {
                     response.setTitle("YOUR CURRENT CONTRACTS").setDescription("");
+                    let active_contract: string = "", pending_contract: string = "", active_placed_contract = "";
 
-                    let active_contract: string = "", pending_contract: string = "";
+                    /**
+                     * Contractor Contract
+                     */
                     for (let i = 0; i < hits.length; i++)
                         if (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(user) && !(<Contract> hits[i]).pending) {
                             active_contract = "**Active contract:**\n" + hits[i].toString;
                             break;
                         }
                     if (active_contract == "")
-                        active_contract = "👍 You have no active contracts!\n"
+                        active_contract = "👍 You have no active contracts (with you as the contractor)!\n"
+                    else
+                        active_contract = "**Active Uncompleted Contract (with you as the contractor):**\n" + active_contract + "\n";
 
                     response.description += active_contract;
 
+                    /**
+                     * Placed Contract
+                     */
+                    for (let i = 0; i < hits.length; i++)
+                        if (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(user) && !(<Contract> hits[i]).pending) {
+                            active_placed_contract = "**Active contract:**\n" + hits[i].toString;
+                            break;
+                        }
+                    if (active_placed_contract == "")
+                        active_placed_contract = "👍 You have not placed any contracts!\n"
+                    else
+                        active_placed_contract = "**Active Uncompleted Contract (with you as the placer):**\n" + active_placed_contract + "\n\n";
+
+                    response.description += active_placed_contract;
+
+                    /**
+                     * Pending Contracts
+                     */
                     let count = 0;
                     for (let i = 0; i < hits.length; i++)
                         if (hits[i] instanceof Contract && (<Contract> hits[i]).contractor.equals(user) && (<Contract> hits[i]).pending) {
@@ -240,11 +268,11 @@ const ContractCommand: Command = {
                     const hirer = findPlayerByIGN(hirer_string);
 
                     if (hirer_string === "undefined" || hirer_string === undefined)
-                        response.setDescription("❌ You have to specify the hirer.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_HIRER);
 
                     // Hirer not found
                     else if (!hirer)
-                        response.setDescription("❌ The hirer of this hit is not a registered user. (And therefore, not found in the registry.)");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.HIRER_NOT_FOUND);
 
                     // User already has an active contract
                     else if (isContractor(user))
@@ -255,7 +283,7 @@ const ContractCommand: Command = {
                         
                         // contract not found
                         if (!contract)
-                            response.setDescription("❌ The contract you intend to claim was not found. Make sure that you are matching the players correctly, and check with \`/contract view\`");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.CONTRACT_NOT_FOUND);
                         
                         // Success
                         else {
@@ -263,6 +291,7 @@ const ContractCommand: Command = {
                             const hirer_response = new MessageEmbed().setDescription(`🟢 ${user.ign} accepted your contract kill on ${contract.target.ign} for ${contract.price} diamonds.`);
                             contract.pending = false;
                             dm_user(hirer, hirer_response);
+                            dm_user(contract.target, new MessageEmbed().setDescription(`:warning: Be careful, a new **Contract** was just placed on your head for ${contract.price} diamonds.`));
                         }
                     }
                     break;
@@ -274,24 +303,25 @@ const ContractCommand: Command = {
                     const hirer = findPlayerByIGN(hirer_string);
 
                     if (hirer_string === "undefined" || hirer_string === undefined)
-                        response.setDescription("❌ You have to specify the hirer.");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.NO_HIRER);
 
                     // Hirer not found
                     else if (!hirer)
-                        response.setDescription("❌ The hirer of this hit is not a registered user. (And therefore, not found in the registry.)");
+                        response.setDescription(COMMAND_ERROR_MESSAGES.HIRER_NOT_FOUND);
 
                     else {
                         const contract = findContract(hirer, user);
                         
                         // contract not found
                         if (!contract)
-                            response.setDescription("❌ The contract you intend to claim was not found. Make sure that you are matching the players correctly, and check with \`/contract view\`");
+                            response.setDescription(COMMAND_ERROR_MESSAGES.CONTRACT_NOT_FOUND);
                         
                         // Success
                         else {
                             response.setDescription(`🛑 Denied contract from ${contract.placer.ign} on ${contract.target.ign} for ${contract.price} diamonds.`);
                             const hirer_response = new MessageEmbed().setDescription(`🛑 ${user.ign} denied your contract kill on ${contract.target.ign} for ${contract.price} diamonds.`);
                             hits.splice(hits.indexOf(contract), 1);
+                            hirer.lastPlacedHit = false;
                             dm_user(hirer, hirer_response);
                         }
                     }
