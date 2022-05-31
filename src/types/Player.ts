@@ -72,7 +72,7 @@ export default class Player {
      * @returns {number} Amount of time since the date in minutes.
      */
     private timeSinceDate(date: Date): number {
-        return Math.ceil(Math.abs(Date.now() - date.getTime()) / (1000)); 
+        return Math.ceil(Math.abs(Date.now() - date.getTime()) / (1000 * 60)); 
     }
 
     /**
