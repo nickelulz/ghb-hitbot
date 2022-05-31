@@ -1,4 +1,4 @@
-import { BaseCommandInteraction, Client, Message, MessageEmbed } from "discord.js";
+import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../../types/Command";
 import { players } from "../../database";
 import Player from "../../types/Player"

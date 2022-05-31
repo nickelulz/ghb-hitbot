@@ -6,9 +6,11 @@ import { BOT_TOKEN } from './constants'
 
 logger.info("Bot is starting...");
 
-export const client = new Client({
+const client = new Client({
     intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES ]
 });
+
+export default client;
 
 ready(client);
 interactionCreate(client);

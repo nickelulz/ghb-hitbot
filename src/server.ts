@@ -1,4 +1,4 @@
-import Server from './constants'; 
+import { Server } from './constants'; 
 import logger from './logger';
 import axios from 'axios';
 import { exec } from 'child_process'; // change to spawn?

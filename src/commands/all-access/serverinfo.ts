@@ -1,6 +1,6 @@
 import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../../types/Command";
-import Server from "../../constants";
+import { Server } from "../../constants";
 
 const ServerInfo: Command = {
     name: "serverinfo",

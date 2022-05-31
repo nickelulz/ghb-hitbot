@@ -1,6 +1,5 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
-import { findHitByTarget, findPlayerById, findPlayerByIGN, hits, isTarget, pending_claims, save, completed_hits, dm_user } from "../../database";
-import Contract from '../../types/Contract'
+import { findHitByTarget, findPlayerById, hits, isTarget, pending_claims, save } from "../../database";
 import Command from "../../types/Command";
 import { COMMAND_ERROR_MESSAGES } from "../../constants";
 

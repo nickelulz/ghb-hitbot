@@ -1,8 +1,8 @@
-import DiscordJS, { BaseCommandInteraction, Client, Message, MessageEmbed } from "discord.js";
+import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../../types/Command";
 import { MINIMUM_HIT_PRICE, SELF_HITS, COMMAND_ERROR_MESSAGES } from "../../constants";
 import Bounty from '../../types/Bounty';
-import { hits, findPlayerById, isTarget, save, findPlayerByIGN, findBounty, isHirer, completed_hits, pending_claims, dm_user } from '../../database';
+import { hits, findPlayerById, isTarget, save, findPlayerByIGN, findBounty, isHirer, pending_claims, dm_user } from '../../database';
 import logger from "../../logger";
 
 const BountyCommand: Command = {

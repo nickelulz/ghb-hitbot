@@ -5,7 +5,7 @@ import Contract from './types/Contract'
 import Hit from './types/Hit'
 import Player from './types/Player'
 import { DEBUG_MODE } from './constants'
-import { client } from './main'
+import client from './main'
 import DiscordJS, { MessageEmbed } from 'discord.js'
 
 /**

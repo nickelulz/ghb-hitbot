@@ -220,15 +220,13 @@ const SERVER_DNS = (process.env.SERVER_DNS === undefined || process.env.SERVER_D
  * @type JSON
  * @constant
  */
-const Server = {
+export const Server = {
     Port: SERVER_PORT,
     Address: SERVER_ADDRESS,
     Version: SERVER_VERSION,
     Path: SERVER_PATH,
     DNS: SERVER_DNS
 }
-
-export default Server;
 
 /**
  * Warns that the Root Admin is not set in .env and returns a placeholder.

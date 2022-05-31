@@ -1,5 +1,4 @@
 import log4js from 'log4js'
-import { DEBUG_MODE } from './constants';
 
 const config = {
   appenders: {
