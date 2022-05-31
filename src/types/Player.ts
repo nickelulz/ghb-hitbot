@@ -100,7 +100,7 @@ export default class Player {
      */
     get hiringCooldownString(): string {
         const hiringCooldown: number = this.hiringCooldown;
-        return `${hiringCooldown / 60}h ${hiringCooldown % 60}m`;
+        return `${Math.floor(hiringCooldown / 60)}h ${Math.floor(hiringCooldown % 60)}m`;
     }
 
     /**
@@ -127,7 +127,7 @@ export default class Player {
      */
     get targetingCooldownString(): string {
         const targetingCooldown: number = this.targetingCooldown;
-        return `${targetingCooldown / 60}h ${targetingCooldown % 60}m`;
+        return `${Math.floor(targetingCooldown / 60)}h ${Math.floor(targetingCooldown % 60)}m`;
     }
 
     /**
@@ -154,7 +154,7 @@ export default class Player {
      */
     get contractingCooldownString(): string {
         const contractingCooldown: number = this.contractingCooldown;
-        return `${contractingCooldown / 60}h ${contractingCooldown % 60}m`;
+        return `${Math.floor(contractingCooldown / 60)}h ${Math.floor(contractingCooldown % 60)}m`;
     }
 
     /**
