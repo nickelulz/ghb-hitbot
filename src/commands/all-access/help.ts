@@ -36,8 +36,7 @@ const Help: Command = {
                 // Registered Only
                 "▸ *contract [mode: set/remove/claim/accept/deny] [?target: playername] [?contractor: playername] [?hirer: playername] [?price: value]*\n" +
                 "▸ *bounty [mode: set/remove/claim] [?target: playername] [?hirer: playername] [?price: value]*\n" +
-                "▸ *deregister*\n" +
-                "▸ *counterclaim [mode: set/verify/reject/list] [?ign: playername]*\n\n" +
+                "▸ *counterclaim [mode: set/verify/reject/list] [?ign: playername]*\n" +
                 "▸ *changeign [newign: playername]*\n\n" +
     
                 // Admin Only
@@ -125,6 +124,10 @@ const Help: Command = {
 
                 case "admin":
                     response.setTitle("ADMIN").setDescription("Used to give/remove admin. **Requires you to be the root administrator.** Usage: \`/admin mode:[give/remove] ign:[The IGN of the user to give/remove administrator access]\`");
+                    break;
+
+                case "changeign": 
+                    response.setTitle("CHANGEIGN").setDescription('Used to change the in-game name associated with your discord account. **Requires you to be a registered user.** Usage: \`/changeign newign:[The new ign to change to]\`');
                     break;
 
                 default: 
