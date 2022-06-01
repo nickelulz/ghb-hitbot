@@ -29,9 +29,10 @@ const Help: Command = {
                 "▸ listbounties\n" +
                 "▸ players\n" +
                 "▸ register [ign: playername]\n" +
-                "▸ playerstatus [ign: playername]\n" +
+                "▸ players [?ign: playername]\n" +
                 "▸ serverinfo\n" +
                 "▸ status\n\n" +
+                "▸ server [mode: status/info/**start**]\n" +
     
                 // Registered Only
                 "▸ *contract [mode: set/remove/claim/accept/deny] [?target: playername] [?contractor: playername] [?hirer: playername] [?price: value]*\n" +

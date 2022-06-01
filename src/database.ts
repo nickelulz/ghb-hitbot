@@ -190,63 +190,64 @@ export function load() {
             players.push(new Player(discordId, ign, lastPlacedHit, lastTargetedHit, lastContractedHit, killCount, deathCount, isAdmin));
         }
         logger.info('Loaded current player database.');
-    });
 
-    fs.readFile(__dirname + '/databases/hits.json', 'utf-8', (err, raw: string) => {
-        if (err) {
-            logger.error(err + " (@79-database.ts)");
-            return;
-        }
-
-        hits_JSON = JSON.parse(raw);
-
-        if (DEBUG_MODE) {
-            logger.debug('Dumping hits JSON.');
-            console.log(hits_JSON);
-        }
-
-        if (hits_JSON === undefined || String(hits_JSON) === "undefined")
-            logger.error("Paring Error. hits_JSON is undefined!");
-
-        parseJSONToArray(hits_JSON, hits);
-        logger.info('Loaded current hit database.');
-    });
-
-    fs.readFile(__dirname + '/databases/pending_claims.json', 'utf-8', (err, raw: string) => {
-        if (err) {
-            logger.error(err);
-            return;
-        }
-
-        pending_claims_JSON = JSON.parse(raw);
-
-        if (DEBUG_MODE) {
-            logger.debug("Dumping pending counterclaims JSON.");
-            console.log(pending_claims_JSON);
-        }
-
-        if (pending_claims_JSON === undefined || String(pending_claims_JSON) === "undefined")
-            logger.error("Paring Error. pending_claims_JSON is undefined!");
-        
-        parseJSONToArray(pending_claims_JSON, pending_claims);
-        logger.info("Loaded current pending counterclaims JSON");
-    });
-
-    fs.readFile(__dirname + '/databases/completed_hits.json', 'utf-8', (err, raw: string) => {
-        if (err) {
-            logger.error(err);
-            return;
-        }
-
-        completed_hits_JSON = JSON.parse(raw);
-
-        if (DEBUG_MODE) {
-            logger.debug("Dumping completed hits JSON.");
-            console.log(completed_hits_JSON);
-        }
-
-        parseJSONToArray(completed_hits_JSON, completed_hits);
-        logger.info("Loaded current completed hits JSON");
+        // Other databases
+        fs.readFile(__dirname + '/databases/hits.json', 'utf-8', (err, raw: string) => {
+            if (err) {
+                logger.error(err + " (@79-database.ts)");
+                return;
+            }
+    
+            hits_JSON = JSON.parse(raw);
+    
+            if (DEBUG_MODE) {
+                logger.debug('Dumping hits JSON.');
+                console.log(hits_JSON);
+            }
+    
+            if (hits_JSON === undefined || String(hits_JSON) === "undefined")
+                logger.error("Paring Error. hits_JSON is undefined!");
+    
+            parseJSONToArray(hits_JSON, hits);
+            logger.info('Loaded current hit database.');
+        });
+    
+        fs.readFile(__dirname + '/databases/pending_claims.json', 'utf-8', (err, raw: string) => {
+            if (err) {
+                logger.error(err);
+                return;
+            }
+    
+            pending_claims_JSON = JSON.parse(raw);
+    
+            if (DEBUG_MODE) {
+                logger.debug("Dumping pending counterclaims JSON.");
+                console.log(pending_claims_JSON);
+            }
+    
+            if (pending_claims_JSON === undefined || String(pending_claims_JSON) === "undefined")
+                logger.error("Paring Error. pending_claims_JSON is undefined!");
+            
+            parseJSONToArray(pending_claims_JSON, pending_claims);
+            logger.info("Loaded current pending counterclaims JSON");
+        });
+    
+        fs.readFile(__dirname + '/databases/completed_hits.json', 'utf-8', (err, raw: string) => {
+            if (err) {
+                logger.error(err);
+                return;
+            }
+    
+            completed_hits_JSON = JSON.parse(raw);
+    
+            if (DEBUG_MODE) {
+                logger.debug("Dumping completed hits JSON.");
+                console.log(completed_hits_JSON);
+            }
+    
+            parseJSONToArray(completed_hits_JSON, completed_hits);
+            logger.info("Loaded current completed hits JSON");
+        });
     });
 }
 

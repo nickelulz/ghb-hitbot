@@ -7,7 +7,7 @@ import logger from './logger';
  * @type number
  * @constant
  */
-export const MINIMUM_HIT_PRICE = 10;
+export const MINIMUM_HIT_PRICE: number = 10;
 
 /**
  * The amount of cooldown time for buffering between hiring each hit
@@ -16,7 +16,7 @@ export const MINIMUM_HIT_PRICE = 10;
  * @type number
  * @constant
  */
-export const HIRING_COOLDOWN = 120;
+export const HIRING_COOLDOWN: number = 120;
 
 /**
  * The amount of cooldown time for buffering between contracting for
@@ -25,7 +25,7 @@ export const HIRING_COOLDOWN = 120;
  * @type number
  * @constant
  */
-export const CONTRACTING_COOLDOWN = 120;
+export const CONTRACTING_COOLDOWN: number = 120;
 
 /**
  * The amount of cooldown time for buffering between being targetted on
@@ -34,7 +34,7 @@ export const CONTRACTING_COOLDOWN = 120;
  * @type number
  * @constant
  */
-export const TARGETING_COOLDOWN = 240;
+export const TARGETING_COOLDOWN: number = 240;
 
 /**
  * Whether or not the bot will attempt to automatically start the minecraft
@@ -191,6 +191,16 @@ export const COMMAND_ERROR_MESSAGES = {
     PLAYER_NOT_FOUND: "❌ The player you selected was not found in the registry. Make sure you spelled the name correctly with correct capitalization.",
 }
 
+const SERVER_RULES: string = '**Rules (and other non-rules):**\n' +
+'1. No hacking/cheating. (No illegal game modifications. You can use any of these mods, though: *Litematica, Optifine, ShulkerboxTooltips, Badlion, Lunar, MiniHud* or etc. Just ask if you aren\'t sure. No XRay.\n\n' +
+'2. No griefing or stealing.\n\n' + 
+'3. Don\'t exploit bugs in the hit system. Use it as intended.\n\n' +
+'4. If you find the end portal, you have to share the coordinates and you can\'t fight the dragon until everyone agrees to it. You can have all of the loot in the stronghold, though.\n\n' +
+'5. No conspiring with others to gang up on hits. Hits are meant to be 1v1 fair fights each time.\n\n' +
+'6. Once the ender dragon is defeated, the seed is released and you can use ChunkBase and etc as much as you\'d like. These services are banned prior to this.\n\n' +
+'7. Breaking the rules of the server is punishable by just light court sentences (paying diamonds, usually) for small stuff (like hit or land disputes) and getting banned from this server and future servers for big stuff (server wide grief)\n\n' +
+'8. People have a land claim (as in they control everything from bedrock to build limit) within 200 blocks radius of their base. This only applies if they are not within the 300 block radius of spawn, however. This also doesn\'t apply if they specifically state the borders of their base.';
+
 /**
  * DO NOT CONFIGURE BEYOND HERE,
  * EVERYTHING BELOW NEEDS TO BE CONFIGURED
@@ -225,7 +235,8 @@ export const Server = {
     Address: SERVER_ADDRESS,
     Version: SERVER_VERSION,
     Path: SERVER_PATH,
-    DNS: SERVER_DNS
+    DNS: SERVER_DNS,
+    Rules: SERVER_RULES
 }
 
 /**

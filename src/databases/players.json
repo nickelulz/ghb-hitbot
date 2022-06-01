@@ -1,30 +1,10 @@
 [
   {
-    "discordId": "333372556830703616",
-    "ign": "nickelulz",
-    "lastPlacedHit": "5/31/2022, 7:39:51 PM",
-    "lastTargetedHit": "none",
-    "lastContractedHit": "none",
-    "killCount": 0,
-    "deathCount": 0,
-    "isAdmin": true
-  },
-  {
-    "discordId": "496452380892856340",
-    "ign": "Cryonein",
-    "lastPlacedHit": "none",
-    "lastTargetedHit": "none",
-    "lastContractedHit": "none",
-    "killCount": 0,
-    "deathCount": 0,
-    "isAdmin": false
-  },
-  {
     "discordId": "698645067279106191",
     "ign": "Gloms_Wow",
     "lastPlacedHit": "none",
     "lastTargetedHit": "none",
-    "lastContractedHit": "5/31/2022, 5:41:00 PM",
+    "lastContractedHit": "none",
     "killCount": 1,
     "deathCount": 0,
     "isAdmin": false
@@ -38,5 +18,25 @@
     "killCount": 0,
     "deathCount": 1,
     "isAdmin": false
+  },
+  {
+    "discordId": "496452380892856340",
+    "ign": "Cryonein",
+    "lastPlacedHit": "none",
+    "lastTargetedHit": "none",
+    "lastContractedHit": "none",
+    "killCount": 0,
+    "deathCount": 0,
+    "isAdmin": false
+  },
+  {
+    "discordId": "333372556830703616",
+    "ign": "nickelulz",
+    "lastPlacedHit": "none",
+    "lastTargetedHit": "none",
+    "lastContractedHit": "none",
+    "killCount": 0,
+    "deathCount": 0,
+    "isAdmin": true
   }
 ]

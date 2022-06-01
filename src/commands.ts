@@ -5,10 +5,9 @@ import Hello from './commands/all-access/hello'
 import Register from "./commands/all-access/register"
 import Help from "./commands/all-access/help"
 import Leaderboards from "./commands/all-access/leaderboards"
-import ServerInfo from "./commands/all-access/serverinfo"
-import Status from "./commands/all-access/status"
 import ListOnlinePlayers from "./commands/all-access/listonlineplayers"
 import Players from "./commands/all-access/players"
+import ServerCommand from "./commands/all-access/servercommand"
 
 // Registered Only
 import BountyCommand from "./commands/registeredonly/bountycommand"
@@ -17,7 +16,6 @@ import CounterClaim from "./commands/registeredonly/counterclaim"
 import ChangeIGN from "./commands/registeredonly/changeign"
 
 // Administrator only
-import Start from "./commands/adminonly/start"
 import EditPlayerData from "./commands/adminonly/editplayerdata"
 import EvaluateClaim from "./commands/adminonly/evaluateclaim"
 
@@ -30,8 +28,7 @@ const commands: Command[] = [
     Hello, 
     Register,
     Help,
-    ServerInfo,
-    Status,
+    ServerCommand,
     ListOnlinePlayers,
     Leaderboards,
     Players,
@@ -43,7 +40,6 @@ const commands: Command[] = [
     ChangeIGN,
 
     // Admin Only Commands
-    Start,
     EditPlayerData,
     EvaluateClaim,
 
