@@ -38,5 +38,15 @@
     "killCount": 0,
     "deathCount": 0,
     "isAdmin": true
+  },
+  {
+    "discordId": "725665715981385771",
+    "ign": "OurBread",
+    "lastPlacedHit": "none",
+    "lastTargetedHit": "none",
+    "lastContractedHit": "none",
+    "killCount": 0,
+    "deathCount": 0,
+    "isAdmin": false
   }
 ]

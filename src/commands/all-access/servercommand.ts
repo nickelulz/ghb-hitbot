@@ -62,6 +62,10 @@ const ServerCommand: Command = {
                 }
                 break;
             }
+
+            default:
+                response.setDescription("The mode has to be either \`status\`, \`info\`, or \`start\`.");
+                break;
         }
 
         await interaction.followUp({
